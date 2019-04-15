@@ -256,4 +256,5 @@ var fnHandleFileSelect = function (evt) {
 document.getElementById('files').addEventListener('change', fnHandleFileSelect, false);
 
 //------------------------------------------------------------------------------
+
 fnInit();
