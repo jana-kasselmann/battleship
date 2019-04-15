@@ -77,8 +77,38 @@ var fnChangeCellSize = function (number) {
 //function executed when the player starts the game to set the correct state
 function fnStartGame() {
     //TODO: check if ships have been defined for player and computer
+    if(!fnIsComputerReady()) {
+        alert("Define and upload the position of the computer's ships.");
+        return;
+    } 
+    if(!fnIsPlayerReady()) {
+        alert("Click on the grid to define the position of your ships.");
+        return;
+    }  
     gameState = "playersTurn";
     alert("It's your turn. Click on a cell to try shooting at your opponent's ships.")
+}
+
+function fnIsComputerReady() {
+    for (var x = 0; x <= (gridSize - 1); x++) {
+        for (var y = 0; y <= (gridSize - 1); y++) {
+            if (aShipsAndWaterComputer[x][y][SHIP_DEF_COMPUTER] === "ship") {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function fnIsPlayerReady() {
+    for (var x = 0; x <= (gridSize - 1); x++) {
+        for (var y = 0; y <= (gridSize - 1); y++) {
+            if (aShipsAndWaterPlayer[x][y][SHIP_DEF_PLAYER] === "ship") {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //function executed when the player wants to configure the computer's ships
