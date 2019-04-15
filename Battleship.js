@@ -1,5 +1,7 @@
 var SHIP_DEF_PLAYER = "shipDefPlayer";
 var ATTACK_TRACK_COMPUTER = "attackTrackComputer";
+var SHIP_DEF_COMPUTER = "shipDefComputer";
+var ATTACK_TRACK_PLAYER = "attackTrackPlayer"
 
 var oCanvas = {
     shipDef: { canvas: document.getElementById("canvasShipDef"), ctx: document.getElementById("canvasShipDef").getContext("2d") },
@@ -74,6 +76,7 @@ var fnChangeCellSize = function (number) {
 
 //function executed when the player starts the game to set the correct state
 function fnStartGame() {
+    //TODO: check if ships have been defined for player and computer
     gameState = "playersTurn";
     alert("It's your turn. Click on a cell to try shooting at your opponent's ships.")
 }
@@ -81,6 +84,7 @@ function fnStartGame() {
 //function executed when the player wants to configure the computer's ships
 function fnConfiguration() {
     gameState = "configPhase";
+    fnInitializeShipsAndWater();
     alert("Define the computer player's ships, then choose 'Save Ship Config'.")
 }
 
@@ -99,8 +103,8 @@ var fnInitializeShipsAndWater = function () {
                 [ATTACK_TRACK_COMPUTER]: "unexplored"
             };
             aShipsAndWaterComputer[x][y] = {
-                shipDefComputer: "water",
-                attackTrackPlayer: "unexplored"
+                [SHIP_DEF_COMPUTER]: "water",
+                [ATTACK_TRACK_PLAYER]: "unexplored"
             };
         }
     }
@@ -186,7 +190,7 @@ function fnDefineCompsShips() {
     // console.log("board", "x", x, "y", y);
     var cellStatus = fnGetCellStatus(aShipsAndWaterComputer[x][y].shipDefComputer);
     aShipsAndWaterComputer[x][y].shipDefComputer = cellStatus;
-    fnColorCells(document.getElementById("canvasShipDef").getContext("2d"), aShipsAndWaterComputer, x, y, shipDefComputer);
+    fnColorCells(document.getElementById("canvasShipDef").getContext("2d"), aShipsAndWaterComputer, x, y, SHIP_DEF_COMPUTER);
 }
 
 //function to mark clicked cell in shipDefPlayer as ship
@@ -217,14 +221,15 @@ var textFile = null,
         }
 
         textFile = window.URL.createObjectURL(data);
+        fnInitializeShipsAndWater();
         gameState = "shipDefPhase";
+        alert("Click on the grid to position your own ships.")
         return textFile;
     };
 
 
 var fnCreateFile = function () {
     var link = document.getElementById('downloadlink');
-    //TO DO: during config phase, ship def should happen on computer's array, not on player's
     link.href = makeTextFile(JSON.stringify(aShipsAndWaterComputer));
     link.style.display = 'block';
 };
@@ -241,8 +246,6 @@ var fnHandleFileSelect = function (evt) {
 
         reader.readAsText(f);
         reader.onloadend = function (e) {
-            var c = document.getElementById("myCanvas");
-            var ctx = c.getContext("2d");
             aShipsAndWaterComputer = JSON.parse(reader.result);
             gridSize = aShipsAndWaterComputer.length;
             document.getElementById("gridSize").value = gridSize;
