@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <body>
+
+    <p><canvas id="canvasShipDef" style="border:1px black solid" onclick="fnMarkClickedCellAsShip()"></canvas></p>
+
+    <p><canvas id="canvasAttackTrack" style="border:1px black solid" onclick=""></canvas></p>
+
+    <p><form>Grid size: <input type="number" id="gridSize" value="10" max="100" min="5" onchange="fnChangeGridSize(this.value)"> cells</form></p>
+
+    <form>Zoom: <input type="range" id="cellSize" value="30" min="20" max="50" onchange="fnChangeCellSize(this.value)"></form>
+
+    <button type="button" onclick="fnConfiguration()">Configure Computer's Ships</button>
+
+    <button type="button" onclick="fnStartGame()">Start Game</button>
+
+    <button id="create" onclick="fnCreateFile()">Save Ship Config</button>
+    <a download="info.txt" id="downloadlink" style="display: none">Download</a>
+
+    <input type="file" id="files" name="files[]" multiple />
+    <output id="list"></output>
+
+    <script src="Battleship.js"></script>
+
+  </body>
+</html>
