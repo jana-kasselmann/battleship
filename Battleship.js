@@ -69,6 +69,7 @@ function fnDrawGrid(oTargetCanvas) {
 var fnInit = function () {
     fnDrawBattleGrounds();
     fnInitializeShipsAndWater();
+    fnSetButtonVisibility(gameState);
 }
 
 //function to update the grid size based on user input
@@ -88,15 +89,16 @@ var fnChangeCellSize = function (number) {
 //function executed when the player starts the game to set the correct state
 function fnStartGame() {
     //check if ships have been defined for player and computer
-    if(!fnIsComputerReady()) {
+    if (!fnIsComputerReady()) {
         alert("Define and upload the position of the computer's ships.");
         return;
-    } 
-    if(!fnIsPlayerReady()) {
+    }
+    if (!fnIsPlayerReady()) {
         alert("Click on the grid to define the position of your ships.");
         return;
-    }  
+    }
     gameState = PLAYERS_TURN;
+    fnSetButtonVisibility(gameState);
     alert("It's your turn. Click on a cell to try shooting at your opponent's ships.")
 }
 
@@ -126,6 +128,7 @@ function fnIsPlayerReady() {
 function fnConfiguration() {
     gameState = CONFIG_PHASE;
     fnInitializeShipsAndWater();
+    fnSetButtonVisibility(gameState);
     alert("Define the computer player's ships, then choose 'Save Ship Config'.")
 }
 
@@ -264,6 +267,7 @@ var textFile = null,
         textFile = window.URL.createObjectURL(data);
         fnInitializeShipsAndWater();
         gameState = SHIP_DEF_PHASE;
+        fnSetButtonVisibility(gameState);
         alert("Click on the grid to position your own ships.")
         return textFile;
     };
@@ -299,5 +303,62 @@ var fnHandleFileSelect = function (evt) {
 document.getElementById('files').addEventListener('change', fnHandleFileSelect, false);
 
 //------------------------------------------------------------------------------
+
+//function to set visibility of all buttons
+function fnSetButtonVisibility(state) {
+    fnConfigButtonVisibility(state);
+    fnSaveConfigButtonVisibility(state);
+    fnStartGameButtonVisibility(state);
+    fnChooseFilesButtonVisibility(state);
+    fnDownloadLinkVisibility(state);
+}
+
+//function to set visibility of configure comps ships button
+function fnConfigButtonVisibility(state) {
+    var button = document.getElementById("configButton");
+    if (state === SHIP_DEF_PHASE) {
+        button.style.display = "inline-block";
+    } else {
+        button.style.display = "none";
+    }
+}
+
+//function to set visibility of save ship config button
+function fnSaveConfigButtonVisibility(state) {
+    var button = document.getElementById("create");
+    if (state === CONFIG_PHASE) {
+        button.style.display = "inline-block";
+    } else {
+        button.style.display = "none";
+    }
+}
+
+//function to set visibility of start game button
+function fnStartGameButtonVisibility(state) {
+    var button = document.getElementById("startGameButton");
+    if (state === SHIP_DEF_PHASE) {
+        button.style.display = "inline-block";
+    } else {
+        button.style.display = "none";
+    }
+}
+
+//function to set visibility of choose files button
+function fnChooseFilesButtonVisibility(state) {
+    var button = document.getElementById("files");
+    if (state === SHIP_DEF_PHASE) {
+        button.style.display = "inline-block";
+    } else {
+        button.style.display = "none";
+    }
+}
+
+//function to set visibility of download link
+function fnDownloadLinkVisibility(state) {
+    var link = document.getElementById("downloadlink");
+    if (state !== SHIP_DEF_PHASE || CONFIG_PHASE) {
+        link.style.display = "none";
+    }
+}
 
 fnInit();

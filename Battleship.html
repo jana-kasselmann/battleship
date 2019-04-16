@@ -10,11 +10,11 @@
 
     <form>Zoom: <input type="range" id="cellSize" value="30" min="20" max="50" onchange="fnChangeCellSize(this.value)"></form>
 
-    <button type="button" onclick="fnConfiguration()">Configure Computer's Ships</button>
+    <button type="button" id="configButton" onclick="fnConfiguration()">Configure Computer's Ships</button>
 
-    <button type="button" onclick="fnStartGame()">Start Game</button>
+    <button type="button" id="startGameButton" onclick="fnStartGame()">Start Game</button>
 
-    <button id="create" onclick="fnCreateFile()">Save Ship Config</button>
+    <button type="button" id="create" onclick="fnCreateFile()">Save Ship Config</button>
     <a download="info.txt" id="downloadlink" style="display: none">Download</a>
 
     <input type="file" id="files" name="files[]" multiple />
