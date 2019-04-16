@@ -1,14 +1,25 @@
 var SHIP_DEF_PLAYER = "shipDefPlayer";
 var ATTACK_TRACK_COMPUTER = "attackTrackComputer";
 var SHIP_DEF_COMPUTER = "shipDefComputer";
-var ATTACK_TRACK_PLAYER = "attackTrackPlayer"
+var ATTACK_TRACK_PLAYER = "attackTrackPlayer";
+var WATER = "water";
+var SHIP = "ship";
+var UNEXPLORED = "unexplored";
+var SHOT = "shot";
+var HIT = "hit";
+var MISSED = "missed";
+var SHIP_DEF_PHASE = "shipDefPhase";
+var CONFIG_PHASE = "configPhase";
+var PLAYERS_TURN = "playersTurn";
+var COMPS_TURN = "compsTurn";
+var GAME_END = "gameEnd";
 
 var oCanvas = {
     shipDef: { canvas: document.getElementById("canvasShipDef"), ctx: document.getElementById("canvasShipDef").getContext("2d") },
     attackTrack: { canvas: document.getElementById("canvasAttackTrack"), ctx: document.getElementById("canvasAttackTrack").getContext("2d") }
 }
 
-var gameState = "shipDefPhase";
+var gameState = SHIP_DEF_PHASE;
 
 //draw initial grids
 var gridSize = 10;
@@ -76,7 +87,7 @@ var fnChangeCellSize = function (number) {
 
 //function executed when the player starts the game to set the correct state
 function fnStartGame() {
-    //TODO: check if ships have been defined for player and computer
+    //check if ships have been defined for player and computer
     if(!fnIsComputerReady()) {
         alert("Define and upload the position of the computer's ships.");
         return;
@@ -85,14 +96,14 @@ function fnStartGame() {
         alert("Click on the grid to define the position of your ships.");
         return;
     }  
-    gameState = "playersTurn";
+    gameState = PLAYERS_TURN;
     alert("It's your turn. Click on a cell to try shooting at your opponent's ships.")
 }
 
 function fnIsComputerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (aShipsAndWaterComputer[x][y][SHIP_DEF_COMPUTER] === "ship") {
+            if (aShipsAndWaterComputer[x][y][SHIP_DEF_COMPUTER] === SHIP) {
                 return true;
             }
         }
@@ -103,7 +114,7 @@ function fnIsComputerReady() {
 function fnIsPlayerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (aShipsAndWaterPlayer[x][y][SHIP_DEF_PLAYER] === "ship") {
+            if (aShipsAndWaterPlayer[x][y][SHIP_DEF_PLAYER] === SHIP) {
                 return true;
             }
         }
@@ -113,7 +124,7 @@ function fnIsPlayerReady() {
 
 //function executed when the player wants to configure the computer's ships
 function fnConfiguration() {
-    gameState = "configPhase";
+    gameState = CONFIG_PHASE;
     fnInitializeShipsAndWater();
     alert("Define the computer player's ships, then choose 'Save Ship Config'.")
 }
@@ -129,12 +140,12 @@ var fnInitializeShipsAndWater = function () {
         aShipsAndWaterComputer[x] = [];
         for (var y = 0; y <= (gridSize - 1); y++) {
             aShipsAndWaterPlayer[x][y] = {
-                [SHIP_DEF_PLAYER]: "water",
-                [ATTACK_TRACK_COMPUTER]: "unexplored"
+                [SHIP_DEF_PLAYER]: WATER,
+                [ATTACK_TRACK_COMPUTER]: UNEXPLORED
             };
             aShipsAndWaterComputer[x][y] = {
-                [SHIP_DEF_COMPUTER]: "water",
-                [ATTACK_TRACK_PLAYER]: "unexplored"
+                [SHIP_DEF_COMPUTER]: WATER,
+                [ATTACK_TRACK_PLAYER]: UNEXPLORED
             };
         }
     }
@@ -145,17 +156,17 @@ var fnInitializeShipsAndWater = function () {
 
 function fnColorFromStatus(status) {
     switch (status) {
-        case "water":
+        case WATER:
             return "#94b4e8";
-        case "ship":
+        case SHIP:
             return "#000000";
-        case "shot":
+        case SHOT:
             return "#ff0010";
-        case "unexplored":
+        case UNEXPLORED:
             return "#ffffff";
-        case "hit":
+        case HIT:
             return "#000000";
-        case "missed":
+        case MISSED:
             return "#94b4e8";
         default:
             console.error("Could not color cell.");
@@ -185,10 +196,10 @@ function fnSetCellColors(ctx, aShipsAndWater, gridUser) {
 //function to define the cell status for marking the clicked cell
 function fnGetCellStatus(status) {
     switch (status) {
-        case "water":
-            return "ship";
-        case "ship":
-            return "water";
+        case WATER:
+            return SHIP;
+        case SHIP:
+            return WATER;
         default:
             console.error("Could not mark clicked cell.");
             return;
@@ -226,10 +237,10 @@ function fnDefineCompsShips() {
 //function to mark clicked cell in shipDefPlayer as ship
 function fnMarkClickedCellAsShip() {
     switch (gameState) {
-        case "shipDefPhase":
+        case SHIP_DEF_PHASE:
             fnDefineOwnShips();
             break;
-        case "configPhase":
+        case CONFIG_PHASE:
             fnDefineCompsShips();
             break;
         default:
@@ -252,7 +263,7 @@ var textFile = null,
 
         textFile = window.URL.createObjectURL(data);
         fnInitializeShipsAndWater();
-        gameState = "shipDefPhase";
+        gameState = SHIP_DEF_PHASE;
         alert("Click on the grid to position your own ships.")
         return textFile;
     };
@@ -278,6 +289,8 @@ var fnHandleFileSelect = function (evt) {
         reader.onloadend = function (e) {
             aShipsAndWaterComputer = JSON.parse(reader.result);
             gridSize = aShipsAndWaterComputer.length;
+            fnDrawBattleGrounds();
+            fnSetCellColors(oCanvas.shipDef.ctx, aShipsAndWaterPlayer, SHIP_DEF_PLAYER);
             document.getElementById("gridSize").value = gridSize;
         }
     }
