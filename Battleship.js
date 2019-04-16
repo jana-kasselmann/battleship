@@ -15,11 +15,17 @@ var COMPS_TURN = "compsTurn";
 var GAME_END = "gameEnd";
 
 var oCanvas = {
-    shipDef: { canvas: document.getElementById("canvasShipDef"), ctx: document.getElementById("canvasShipDef").getContext("2d") },
-    attackTrack: { canvas: document.getElementById("canvasAttackTrack"), ctx: document.getElementById("canvasAttackTrack").getContext("2d") }
+    shipDef: { 
+        canvas: document.getElementById("canvasShipDef"), 
+        ctx: document.getElementById("canvasShipDef").getContext("2d") 
+    },
+    attackTrack: { 
+        canvas: document.getElementById("canvasAttackTrack"), 
+        ctx: document.getElementById("canvasAttackTrack").getContext("2d") 
+    }
 }
 
-var gameState = SHIP_DEF_PHASE;
+var gameState = null;
 
 //draw initial grids
 var gridSize = 10;
@@ -69,7 +75,7 @@ function fnDrawGrid(oTargetCanvas) {
 var fnInit = function () {
     fnDrawBattleGrounds();
     fnInitializeShipsAndWater();
-    fnSetButtonVisibility(gameState);
+    updateGameState(SHIP_DEF_PHASE);
 }
 
 //function to update the grid size based on user input
@@ -82,8 +88,8 @@ var fnChangeGridSize = function (number) {
 var fnChangeCellSize = function (number) {
     cellSize = parseInt(number);
     fnDrawBattleGrounds();
-    fnSetCellColors(oCanvas.shipDef.ctx, aShipsAndWaterPlayer, SHIP_DEF_PLAYER);
-    fnSetCellColors(oCanvas.attackTrack.ctx, aShipsAndWaterPlayer, ATTACK_TRACK_COMPUTER);
+    fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
+    fnSetCellColors(oCanvas.attackTrack.ctx, gridsPlayer, ATTACK_TRACK_COMPUTER);
 }
 
 //function executed when the player starts the game to set the correct state
@@ -97,15 +103,14 @@ function fnStartGame() {
         alert("Click on the grid to define the position of your ships.");
         return;
     }
-    gameState = PLAYERS_TURN;
-    fnSetButtonVisibility(gameState);
+    updateGameState(PLAYERS_TURN);
     alert("It's your turn. Click on a cell to try shooting at your opponent's ships.")
 }
 
 function fnIsComputerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (aShipsAndWaterComputer[x][y][SHIP_DEF_COMPUTER] === SHIP) {
+            if (gridsComputer[x][y][SHIP_DEF_COMPUTER] === SHIP) {
                 return true;
             }
         }
@@ -116,7 +121,7 @@ function fnIsComputerReady() {
 function fnIsPlayerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (aShipsAndWaterPlayer[x][y][SHIP_DEF_PLAYER] === SHIP) {
+            if (gridsPlayer[x][y][SHIP_DEF_PLAYER] === SHIP) {
                 return true;
             }
         }
@@ -126,34 +131,33 @@ function fnIsPlayerReady() {
 
 //function executed when the player wants to configure the computer's ships
 function fnConfiguration() {
-    gameState = CONFIG_PHASE;
+    updateGameState(CONFIG_PHASE);
     fnInitializeShipsAndWater();
-    fnSetButtonVisibility(gameState);
     alert("Define the computer player's ships, then choose 'Save Ship Config'.")
 }
 
 //function for initializing the cell colors
-var aShipsAndWaterPlayer = [];
-var aShipsAndWaterComputer = [];
+var gridsPlayer = [];
+var gridsComputer = [];
 var fnInitializeShipsAndWater = function () {
-    aShipsAndWaterPlayer = [];
-    aShipsAndWaterComputer = [];
+    gridsPlayer = [];
+    gridsComputer = [];
     for (var x = 0; x <= (gridSize - 1); x++) {
-        aShipsAndWaterPlayer[x] = [];
-        aShipsAndWaterComputer[x] = [];
+        gridsPlayer[x] = [];
+        gridsComputer[x] = [];
         for (var y = 0; y <= (gridSize - 1); y++) {
-            aShipsAndWaterPlayer[x][y] = {
+            gridsPlayer[x][y] = {
                 [SHIP_DEF_PLAYER]: WATER,
                 [ATTACK_TRACK_COMPUTER]: UNEXPLORED
             };
-            aShipsAndWaterComputer[x][y] = {
+            gridsComputer[x][y] = {
                 [SHIP_DEF_COMPUTER]: WATER,
                 [ATTACK_TRACK_PLAYER]: UNEXPLORED
             };
         }
     }
-    fnSetCellColors(oCanvas.shipDef.ctx, aShipsAndWaterPlayer, SHIP_DEF_PLAYER);
-    fnSetCellColors(oCanvas.attackTrack.ctx, aShipsAndWaterPlayer, ATTACK_TRACK_COMPUTER);
+    fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
+    fnSetCellColors(oCanvas.attackTrack.ctx, gridsPlayer, ATTACK_TRACK_COMPUTER);
 }
 
 
@@ -218,9 +222,9 @@ function fnDefineOwnShips() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(aShipsAndWaterPlayer[x][y].shipDefPlayer);
-    aShipsAndWaterPlayer[x][y].shipDefPlayer = cellStatus;
-    fnColorCells(document.getElementById("canvasShipDef").getContext("2d"), aShipsAndWaterPlayer, x, y, SHIP_DEF_PLAYER);
+    var cellStatus = fnGetCellStatus(gridsPlayer[x][y].shipDefPlayer);
+    gridsPlayer[x][y].shipDefPlayer = cellStatus;
+    fnColorCells(oCanvas.shipDef.ctx, gridsPlayer, x, y, SHIP_DEF_PLAYER);
 }
 
 //function to define computer player's ships
@@ -232,9 +236,9 @@ function fnDefineCompsShips() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(aShipsAndWaterComputer[x][y].shipDefComputer);
-    aShipsAndWaterComputer[x][y].shipDefComputer = cellStatus;
-    fnColorCells(document.getElementById("canvasShipDef").getContext("2d"), aShipsAndWaterComputer, x, y, SHIP_DEF_COMPUTER);
+    var cellStatus = fnGetCellStatus(gridsComputer[x][y].shipDefComputer);
+    gridsComputer[x][y].shipDefComputer = cellStatus;
+    fnColorCells(oCanvas.shipDef.ctx, gridsComputer, x, y, SHIP_DEF_COMPUTER);
 }
 
 //function to mark clicked cell in shipDefPlayer as ship
@@ -252,33 +256,47 @@ function fnMarkClickedCellAsShip() {
     }
 }
 
-//function during player's turn to shoot at the computer's ships
-function fnAttackPlayersTurn() {
-    if (gameState === PLAYERS_TURN) {
-        var canvasElement = event.target;
-        var x = event.pageX - canvasElement.offsetLeft;
-        var y = event.pageY - canvasElement.offsetTop;
-        // console.log("canvas", "x", x, "y", y);
-        x = Math.floor(x / cellSize);
-        y = Math.floor(y / cellSize);
-        // console.log("board", "x", x, "y", y);
-        var cellStatus = fnShootAtComputer(aShipsAndWaterComputer[x][y].shipDefComputer);
-        if (aShipsAndWaterPlayer[x][y][ATTACK_TRACK_COMPUTER] !== UNEXPLORED) {
-            alert("You've already attacked these coordinates.");
-            return;
-        } else {
-            aShipsAndWaterPlayer[x][y][ATTACK_TRACK_COMPUTER] = cellStatus;
-            fnColorCells(document.getElementById("canvasAttackTrack").getContext("2d"), aShipsAndWaterPlayer, x, y, ATTACK_TRACK_COMPUTER);
-            switch (cellStatus) {
-                case MISSED:
-                    gameState = COMPS_TURN;
-                    break;
-                case HIT:
-                    gameState = PLAYERS_TURN;
-                    break;
-            }
-        }
 
+function getGridCoordinates(event) {
+    var canvasElement = event.target;
+    var x = event.pageX - canvasElement.offsetLeft;
+    var y = event.pageY - canvasElement.offsetTop;
+    // console.log("canvas", "x", x, "y", y);
+    x = Math.floor(x / cellSize);
+    y = Math.floor(y / cellSize);
+    // console.log("board", "x", x, "y", y);
+    return { x, y }
+}
+
+//function during player's turn to shoot at the computer's ships
+function fnAttackPlayersTurn(event) {
+    if (gameState !== PLAYERS_TURN) {
+        return;
+    }
+
+    var { x, y } = getGridCoordinates(event);
+
+    // TODO refactor to st like gridsPlayer[OWN][x][y] gridsPlayer[ENEMY][x][y]
+    if (gridsPlayer[x][y][ATTACK_TRACK_COMPUTER] !== UNEXPLORED) {
+        alert("You've already attacked these coordinates.");
+        return;
+    } 
+
+
+    var cellStatus = fnShootAtComputer(gridsComputer[x][y][SHIP_DEF_COMPUTER]);
+    gridsPlayer[x][y][ATTACK_TRACK_COMPUTER] = cellStatus;
+    fnColorCells(oCanvas.attackTrack.ctx, gridsPlayer, x, y, ATTACK_TRACK_COMPUTER);
+
+    if (cellStatus === MISSED) {
+        updateGameState(COMPS_TURN);
+    }
+}
+
+function updateGameState(newState) {
+    gameState = newState;
+    fnSetButtonVisibility(gameState);
+    if (gameState === COMPS_TURN) {
+        fnAttackCompsTurn();
     }
 }
 
@@ -292,6 +310,11 @@ function fnShootAtComputer(aShipsAndWater) {
             console.error("Could not shoot at computer.");
             return;
     }
+}
+
+//function during computer's turn to shoot at the player's ships
+function fnAttackCompsTurn() {
+
 }
 
 //------------------------------------------------------------------------------
@@ -308,8 +331,7 @@ var textFile = null,
 
         textFile = window.URL.createObjectURL(data);
         fnInitializeShipsAndWater();
-        gameState = SHIP_DEF_PHASE;
-        fnSetButtonVisibility(gameState);
+        updateGameState(SHIP_DEF_PHASE);
         alert("Click on the grid to position your own ships.")
         return textFile;
     };
@@ -317,7 +339,7 @@ var textFile = null,
 
 var fnCreateFile = function () {
     var link = document.getElementById('downloadlink');
-    link.href = makeTextFile(JSON.stringify(aShipsAndWaterComputer));
+    link.href = makeTextFile(JSON.stringify(gridsComputer));
     link.style.display = 'block';
 };
 
@@ -333,10 +355,10 @@ var fnHandleFileSelect = function (evt) {
 
         reader.readAsText(f);
         reader.onloadend = function (e) {
-            aShipsAndWaterComputer = JSON.parse(reader.result);
-            gridSize = aShipsAndWaterComputer.length;
+            gridsComputer = JSON.parse(reader.result);
+            gridSize = gridsComputer.length;
             fnDrawBattleGrounds();
-            fnSetCellColors(oCanvas.shipDef.ctx, aShipsAndWaterPlayer, SHIP_DEF_PLAYER);
+            fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
             document.getElementById("gridSize").value = gridSize;
         }
     }

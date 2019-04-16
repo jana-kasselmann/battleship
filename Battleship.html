@@ -4,7 +4,7 @@
 
     <p><canvas id="canvasShipDef" style="border:1px black solid" onclick="fnMarkClickedCellAsShip()"></canvas></p>
 
-    <p><canvas id="canvasAttackTrack" style="border:1px black solid" onclick="fnAttackPlayersTurn()"></canvas></p>
+    <p><canvas id="canvasAttackTrack" style="border:1px black solid" onclick="fnAttackPlayersTurn(event)"></canvas></p>
 
     <p><form>Grid size: <input type="number" id="gridSize" value="10" max="100" min="5" onchange="fnChangeGridSize(this.value)"> cells</form></p>
 
