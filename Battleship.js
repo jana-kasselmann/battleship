@@ -252,6 +252,48 @@ function fnMarkClickedCellAsShip() {
     }
 }
 
+//function during player's turn to shoot at the computer's ships
+function fnAttackPlayersTurn() {
+    if (gameState === PLAYERS_TURN) {
+        var canvasElement = event.target;
+        var x = event.pageX - canvasElement.offsetLeft;
+        var y = event.pageY - canvasElement.offsetTop;
+        // console.log("canvas", "x", x, "y", y);
+        x = Math.floor(x / cellSize);
+        y = Math.floor(y / cellSize);
+        // console.log("board", "x", x, "y", y);
+        var cellStatus = fnShootAtComputer(aShipsAndWaterComputer[x][y].shipDefComputer);
+        if (aShipsAndWaterPlayer[x][y][ATTACK_TRACK_COMPUTER] !== UNEXPLORED) {
+            alert("You've already attacked these coordinates.");
+            return;
+        } else {
+            aShipsAndWaterPlayer[x][y][ATTACK_TRACK_COMPUTER] = cellStatus;
+            fnColorCells(document.getElementById("canvasAttackTrack").getContext("2d"), aShipsAndWaterPlayer, x, y, ATTACK_TRACK_COMPUTER);
+            switch (cellStatus) {
+                case MISSED:
+                    gameState = COMPS_TURN;
+                    break;
+                case HIT:
+                    gameState = PLAYERS_TURN;
+                    break;
+            }
+        }
+
+    }
+}
+
+function fnShootAtComputer(aShipsAndWater) {
+    switch (aShipsAndWater) {
+        case WATER:
+            return MISSED;
+        case SHIP:
+            return HIT;
+        default:
+            console.error("Could not shoot at computer.");
+            return;
+    }
+}
+
 //------------------------------------------------------------------------------
 //save custom shipDef
 var textFile = null,
