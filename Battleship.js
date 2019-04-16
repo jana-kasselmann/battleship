@@ -144,21 +144,6 @@ function fnConfiguration() {
 var fnInitializeShipsAndWater = function () {
     gridsPlayer = initializeGrids(WATER, UNEXPLORED);
     gridsComputer = initializeGrids(WATER, UNEXPLORED);
-
-    // for (var x = 0; x <= (gridSize - 1); x++) {
-    //     gridsPlayer[x] = [];
-    //     gridsComputer[x] = [];
-    //     for (var y = 0; y <= (gridSize - 1); y++) {
-    //         gridsPlayer[x][y] = {
-    //             [SHIP_DEF_PLAYER]: WATER,
-    //             [ATTACK_TRACK_COMPUTER]: UNEXPLORED
-    //         };
-    //         gridsComputer[x][y] = {
-    //             [SHIP_DEF_COMPUTER]: WATER,
-    //             [ATTACK_TRACK_PLAYER]: UNEXPLORED
-    //         };
-    //     }
-    // }
     fnSetCellColors(oCanvas[OWN].ctx, gridsPlayer[OWN]);
     fnSetCellColors(oCanvas[ENEMY].ctx, gridsPlayer[ENEMY]);
 }
