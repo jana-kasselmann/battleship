@@ -13,18 +13,22 @@ var CONFIG_PHASE = "configPhase";
 var PLAYERS_TURN = "playersTurn";
 var COMPS_TURN = "compsTurn";
 var GAME_END = "gameEnd";
+var OWN = "own";
+var ENEMY = "enemy";
 
 var oCanvas = {
-    shipDef: { 
-        canvas: document.getElementById("canvasShipDef"), 
-        ctx: document.getElementById("canvasShipDef").getContext("2d") 
+    [OWN]: {
+        canvas: document.getElementById("canvasShipDef"),
+        ctx: document.getElementById("canvasShipDef").getContext("2d")
     },
-    attackTrack: { 
-        canvas: document.getElementById("canvasAttackTrack"), 
-        ctx: document.getElementById("canvasAttackTrack").getContext("2d") 
+    [ENEMY]: {
+        canvas: document.getElementById("canvasAttackTrack"),
+        ctx: document.getElementById("canvasAttackTrack").getContext("2d")
     }
 }
 
+var gridsPlayer = null;
+var gridsComputer = null;
 var gameState = null;
 
 //draw initial grids
@@ -32,8 +36,8 @@ var gridSize = 10;
 var cellSize = 30;
 
 function fnDrawBattleGrounds() {
-    fnDrawGrid(oCanvas.shipDef);
-    fnDrawGrid(oCanvas.attackTrack);
+    fnDrawGrid(oCanvas[OWN]);
+    fnDrawGrid(oCanvas[ENEMY]);
 }
 
 function fnDrawGrid(oTargetCanvas) {
@@ -88,8 +92,8 @@ var fnChangeGridSize = function (number) {
 var fnChangeCellSize = function (number) {
     cellSize = parseInt(number);
     fnDrawBattleGrounds();
-    fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
-    fnSetCellColors(oCanvas.attackTrack.ctx, gridsPlayer, ATTACK_TRACK_COMPUTER);
+    fnSetCellColors(oCanvas[OWN].ctx, gridsPlayer[OWN]);
+    fnSetCellColors(oCanvas[ENEMY].ctx, gridsPlayer[ENEMY]);
 }
 
 //function executed when the player starts the game to set the correct state
@@ -110,7 +114,7 @@ function fnStartGame() {
 function fnIsComputerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (gridsComputer[x][y][SHIP_DEF_COMPUTER] === SHIP) {
+            if (gridsComputer[OWN][x][y] === SHIP) {
                 return true;
             }
         }
@@ -121,7 +125,7 @@ function fnIsComputerReady() {
 function fnIsPlayerReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            if (gridsPlayer[x][y][SHIP_DEF_PLAYER] === SHIP) {
+            if (gridsPlayer[OWN][x][y] === SHIP) {
                 return true;
             }
         }
@@ -137,27 +141,29 @@ function fnConfiguration() {
 }
 
 //function for initializing the cell colors
-var gridsPlayer = [];
-var gridsComputer = [];
 var fnInitializeShipsAndWater = function () {
-    gridsPlayer = [];
-    gridsComputer = [];
+    gridsPlayer = initializeGrids(WATER, UNEXPLORED);
+    gridsComputer = initializeGrids(WATER, UNEXPLORED);
+    fnSetCellColors(oCanvas[OWN].ctx, gridsPlayer[OWN]);
+    fnSetCellColors(oCanvas[ENEMY].ctx, gridsPlayer[ENEMY]);
+}
+
+function initializeGrid(cellStatus) {
+    var grid = [];
     for (var x = 0; x <= (gridSize - 1); x++) {
-        gridsPlayer[x] = [];
-        gridsComputer[x] = [];
+        grid[x] = [];
         for (var y = 0; y <= (gridSize - 1); y++) {
-            gridsPlayer[x][y] = {
-                [SHIP_DEF_PLAYER]: WATER,
-                [ATTACK_TRACK_COMPUTER]: UNEXPLORED
-            };
-            gridsComputer[x][y] = {
-                [SHIP_DEF_COMPUTER]: WATER,
-                [ATTACK_TRACK_PLAYER]: UNEXPLORED
-            };
-        }
+            grid[x][y] = cellStatus;
+        };
     }
-    fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
-    fnSetCellColors(oCanvas.attackTrack.ctx, gridsPlayer, ATTACK_TRACK_COMPUTER);
+    return grid;
+}
+
+function initializeGrids(ownCellStatus, enemyCellStatus) {
+    return {
+        [OWN]: initializeGrid(ownCellStatus),
+        [ENEMY]: initializeGrid(enemyCellStatus)
+    };
 }
 
 
@@ -181,23 +187,23 @@ function fnColorFromStatus(status) {
     }
 }
 
+//function to decide how to color the cells
+function fnSetCellColors(ctx, grid) {
+    for (var x = 0; x <= (gridSize - 1); x++) {
+        for (var y = 0; y <= (gridSize - 1); y++) {
+            fnColorCells(ctx, grid, x, y);
+        }
+    }
+}
+
 //function to color the cells
-function fnColorCells(ctx, aShipsAndWater, x, y, gridUser) {
-    var color = fnColorFromStatus(aShipsAndWater[x][y][gridUser]);
+function fnColorCells(ctx, grid, x, y) {
+    var color = fnColorFromStatus(grid[x][y]);
     var xStartRectangle, yStartRectangle;
     xStartRectangle = (x * cellSize) + 1;
     yStartRectangle = (y * cellSize) + 1;
     ctx.fillStyle = color;
     ctx.fillRect(xStartRectangle, yStartRectangle, cellSize - ctx.lineWidth, cellSize - ctx.lineWidth);
-}
-
-//function to decide how to color the cells
-function fnSetCellColors(ctx, aShipsAndWater, gridUser) {
-    for (var x = 0; x <= (gridSize - 1); x++) {
-        for (var y = 0; y <= (gridSize - 1); y++) {
-            fnColorCells(ctx, aShipsAndWater, x, y, gridUser);
-        }
-    }
 }
 
 //function to define the cell status for marking the clicked cell
@@ -222,9 +228,9 @@ function fnDefineOwnShips() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(gridsPlayer[x][y].shipDefPlayer);
-    gridsPlayer[x][y].shipDefPlayer = cellStatus;
-    fnColorCells(oCanvas.shipDef.ctx, gridsPlayer, x, y, SHIP_DEF_PLAYER);
+    var cellStatus = fnGetCellStatus(gridsPlayer[OWN][x][y]);
+    gridsPlayer[OWN][x][y] = cellStatus;
+    fnColorCells(oCanvas[OWN].ctx, gridsPlayer[OWN], x, y);
 }
 
 //function to define computer player's ships
@@ -236,9 +242,9 @@ function fnDefineCompsShips() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(gridsComputer[x][y].shipDefComputer);
-    gridsComputer[x][y].shipDefComputer = cellStatus;
-    fnColorCells(oCanvas.shipDef.ctx, gridsComputer, x, y, SHIP_DEF_COMPUTER);
+    var cellStatus = fnGetCellStatus(gridsComputer[OWN][x][y]);
+    gridsComputer[OWN][x][y] = cellStatus;
+    fnColorCells(oCanvas[OWN].ctx, gridsComputer[OWN], x, y);
 }
 
 //function to mark clicked cell in shipDefPlayer as ship
@@ -276,16 +282,14 @@ function fnAttackPlayersTurn(event) {
 
     var { x, y } = getGridCoordinates(event);
 
-    // TODO refactor to st like gridsPlayer[OWN][x][y] gridsPlayer[ENEMY][x][y]
-    if (gridsPlayer[x][y][ATTACK_TRACK_COMPUTER] !== UNEXPLORED) {
+    if (gridsPlayer[ENEMY][x][y] !== UNEXPLORED) {
         alert("You've already attacked these coordinates.");
         return;
-    } 
+    }
 
-
-    var cellStatus = fnShootAtComputer(gridsComputer[x][y][SHIP_DEF_COMPUTER]);
-    gridsPlayer[x][y][ATTACK_TRACK_COMPUTER] = cellStatus;
-    fnColorCells(oCanvas.attackTrack.ctx, gridsPlayer, x, y, ATTACK_TRACK_COMPUTER);
+    var cellStatus = fnShootAtComputer(gridsComputer[OWN][x][y]);
+    gridsPlayer[ENEMY][x][y] = cellStatus;
+    fnColorCells(oCanvas[ENEMY].ctx, gridsPlayer[ENEMY], x, y);
 
     if (cellStatus === MISSED) {
         updateGameState(COMPS_TURN);
@@ -300,8 +304,8 @@ function updateGameState(newState) {
     }
 }
 
-function fnShootAtComputer(aShipsAndWater) {
-    switch (aShipsAndWater) {
+function fnShootAtComputer(grid) {
+    switch (grid) {
         case WATER:
             return MISSED;
         case SHIP:
@@ -356,9 +360,9 @@ var fnHandleFileSelect = function (evt) {
         reader.readAsText(f);
         reader.onloadend = function (e) {
             gridsComputer = JSON.parse(reader.result);
-            gridSize = gridsComputer.length;
+            gridSize = gridsComputer[OWN].length;
             fnDrawBattleGrounds();
-            fnSetCellColors(oCanvas.shipDef.ctx, gridsPlayer, SHIP_DEF_PLAYER);
+            fnSetCellColors(oCanvas[OWN].ctx, gridsPlayer[OWN]);
             document.getElementById("gridSize").value = gridSize;
         }
     }
