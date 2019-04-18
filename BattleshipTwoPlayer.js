@@ -1,7 +1,3 @@
-var SHIP_DEF_PLAYER = "shipDefPlayer";
-var ATTACK_TRACK_COMPUTER = "attackTrackComputer";
-var SHIP_DEF_COMPUTER = "shipDefComputer";
-var ATTACK_TRACK_PLAYER = "attackTrackPlayer";
 var WATER = "water";
 var SHIP = "ship";
 var UNEXPLORED = "unexplored";
@@ -19,7 +15,7 @@ var ENEMY = "enemy";
 var oCanvas = {
     [OWN]: {
         canvas: document.getElementById("canvasShipDef"),
-        ctx: document.getElementById("canvasShipDef").getContext("2d")
+        ctx: documnt.getElementById("canvasShipDef").getContext("2d")
     },
     [ENEMY]: {
         canvas: document.getElementById("canvasAttackTrack"),
@@ -287,7 +283,7 @@ function fnAttackPlayersTurn(event) {
         return;
     }
 
-    var cellStatus = fnShootAtComputer(gridsComputer[OWN][x][y]);
+    var cellStatus = fnShootAtEnemy(gridsComputer[OWN][x][y]);
     gridsPlayer[ENEMY][x][y] = cellStatus;
     fnColorCells(oCanvas[ENEMY].ctx, gridsPlayer[ENEMY], x, y);
 
@@ -304,7 +300,7 @@ function updateGameState(newState) {
     }
 }
 
-function fnShootAtComputer(grid) {
+function fnShootAtEnemy(grid) {
     switch (grid) {
         case WATER:
             return MISSED;
@@ -316,6 +312,7 @@ function fnShootAtComputer(grid) {
     }
 }
 
+//TODO
 //function during computer's turn to shoot at the player's ships
 function fnAttackCompsTurn() {
 
@@ -429,4 +426,4 @@ function fnDownloadLinkVisibility(state) {
     }
 }
 
-fnInit();
+it();
