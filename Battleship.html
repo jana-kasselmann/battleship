@@ -2,25 +2,21 @@
 <html>
   <body>
 
-    <p><canvas id="canvasShipDef" style="border:1px black solid" onclick="fnMarkClickedCellAsShip()"></canvas></p>
+    <p><canvas id="canvasPlayer1" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas></p>
 
-    <p><canvas id="canvasAttackTrack" style="border:1px black solid" onclick="fnAttackPlayersTurn(event)"></canvas></p>
+    <p><canvas id="canvasPlayer2" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas></p>
 
-    <p><form>Grid size: <input type="number" id="gridSize" value="10" max="100" min="5" onchange="fnChangeGridSize(this.value)"> cells</form></p>
+    <p><form id="gridSizeForm">Grid size: <input type="number" id="gridSize" value="10" max="100" min="5" onchange="fnChangeGridSize(this.value)"> cells</form></p>
 
-    <form>Zoom: <input type="range" id="cellSize" value="30" min="20" max="50" onchange="fnChangeCellSize(this.value)"></form>
+    <form id="cellSizeForm">Zoom: <input type="range" id="cellSize" value="30" min="20" max="50" onchange="fnChangeCellSize(this.value)"></form>
 
-    <button type="button" id="configButton" onclick="fnConfiguration()">Configure Computer's Ships</button>
+    <button type="button" id="shipDefPlayer1" onclick="updateGameState(SHIP_DEF_PLAYER1_PHASE)">Start</button>
+
+    <button type="button" id="shipDefPlayer2" onclick="checkPlayer1Readiness()">Next</button>
 
     <button type="button" id="startGameButton" onclick="fnStartGame()">Start Game</button>
 
-    <button type="button" id="create" onclick="fnCreateFile()">Save Ship Config</button>
-    <a download="info.txt" id="downloadlink" style="display: none">Download</a>
-
-    <input type="file" id="files" name="files[]" multiple />
-    <output id="list"></output>
-
-    <script src="Battleship.js"></script>
+    <script src="BattleshipTwoPlayer.js"></script>
 
   </body>
 </html>

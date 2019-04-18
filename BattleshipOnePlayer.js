@@ -15,7 +15,7 @@ var ENEMY = "enemy";
 var oCanvas = {
     [OWN]: {
         canvas: document.getElementById("canvasShipDef"),
-        ctx: documnt.getElementById("canvasShipDef").getContext("2d")
+        ctx: document.getElementById("canvasShipDef").getContext("2d")
     },
     [ENEMY]: {
         canvas: document.getElementById("canvasAttackTrack"),
