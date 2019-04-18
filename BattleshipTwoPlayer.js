@@ -130,6 +130,12 @@ function fnStartGame() {
         return;
     }
 
+
+    if (equalNumberOfShips(gridsPlayer1, gridsPlayer2)) {
+        alert("You've marked too many cells. You need to mark " + countCellsInGrid(gridsPlayer1[OWN], SHIP) + " cells.");
+        return;
+    }
+
     fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
     fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
     updateGameState(PLAYER1_TURN);
@@ -235,7 +241,7 @@ function fnGetCellStatus(status) {
     };
 }
 
-//function for player's definition of own ships
+//function for player 1's definition of own ships
 function fnDefinePlayer1Ships() {
     var canvasElement = event.target;
     var x = event.pageX - canvasElement.offsetLeft;
@@ -250,7 +256,7 @@ function fnDefinePlayer1Ships() {
     updateGameState(SHIP_DEF_PLAYER1_PHASE);
 }
 
-//function to define computer player's ships
+//function to define player 2's ships
 function fnDefinePlayer2Ships() {
     var canvasElement = event.target;
     var x = event.pageX - canvasElement.offsetLeft;
@@ -358,6 +364,14 @@ function fnAttackPlayer2Turn(event) {
     if (cellStatus === MISSED) {
         updateGameState(PLAYER1_TURN);
     }
+}
+
+//check if player 2 has same number of cells marked as ship as player 1
+function equalNumberOfShips(gridPlayer1, gridPlayer2) {
+    var player1ShipCount = countCellsInGrid(gridPlayer1[OWN], SHIP);
+    var player2ShipCount = countCellsInGrid(gridPlayer2[OWN], SHIP);
+    var shipNumberComparison = player2ShipCount > player1ShipCount;
+    return shipNumberComparison;
 }
 
 //count cells with certain status in grid
