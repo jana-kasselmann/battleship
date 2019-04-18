@@ -1,7 +1,6 @@
 var WATER = "water";
 var SHIP = "ship";
 var UNEXPLORED = "unexplored";
-var SHOT = "shot";
 var HIT = "hit";
 var MISSED = "missed";
 var GRID_CONFIG_PHASE = "gridConfigPhase";
@@ -192,8 +191,6 @@ function fnColorFromStatus(status) {
             return "#94b4e8";
         case SHIP:
             return "#000000";
-        case SHOT:
-            return "#ff0010";
         case UNEXPLORED:
             return "#ffffff";
         case HIT:
@@ -322,6 +319,12 @@ function fnAttackPlayer1Turn(event) {
     gridsPlayer1[ENEMY][x][y] = cellStatus;
     fnColorCells(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY], x, y);
 
+    if (gameIsOver(gridsPlayer1, gridsPlayer2)) {
+        alert("Player 1 has won.")
+        updateGameState(GAME_END);
+        return;
+    }
+
     if (cellStatus === MISSED) {
         updateGameState(PLAYER2_TURN);
     }
@@ -347,9 +350,34 @@ function fnAttackPlayer2Turn(event) {
     gridsPlayer2[ENEMY][x][y] = cellStatus;
     fnColorCells(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY], x, y);
 
+    if (gameIsOver(gridsPlayer2, gridsPlayer1)) {
+        alert("Player 2 has won.")
+        updateGameState(GAME_END);
+        return;
+    }
     if (cellStatus === MISSED) {
         updateGameState(PLAYER1_TURN);
     }
+}
+
+//count cells with certain status in grid
+function countCellsInGrid(grid, cellStatus) {
+    var count = 0;
+    for (var x = 0; x <= (gridSize - 1); x++) {
+        for (var y = 0; y <= (gridSize - 1); y++) {
+            if (grid[x][y] === cellStatus) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+//check if game is over by comparison of number of ships and shots
+function gameIsOver(gridCurrentPlayer, gridOpponent) {
+    var hitCount = countCellsInGrid(gridCurrentPlayer[ENEMY], HIT);
+    var shipCount = countCellsInGrid(gridOpponent[OWN], SHIP);
+    return hitCount === shipCount;
 }
 
 function updateGameState(newState) {
