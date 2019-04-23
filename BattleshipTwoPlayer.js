@@ -421,6 +421,10 @@ function fnSetButtonVisibility(state) {
     shipDefPlayer1ButtonVisibility(state);
     shipDefPlayer2ButtonVisibility(state);
     startGameButtonVisibility(state);
+    player1ShipDefTextVisibility(state);
+    player2ShipDefTextVisibility(state);
+    canvasPlayer1TextVisibility(state);
+    canvasPlayer2TextVisibility(state);
     canvasPlayer1Visibility(state);
     canvasPlayer2Visibility(state);
 }
@@ -472,6 +476,56 @@ function startGameButtonVisibility(state) {
         button.style.display = "inline-block";
     } else {
         button.style.display = "none";
+    }
+}
+
+//function to set visibility of player 1 shipDef text
+function player1ShipDefTextVisibility(state) {
+    var text = document.getElementById("player1ShipPlacement");
+    if (state === SHIP_DEF_PLAYER1_PHASE) {
+        text.style.display = "inline-block";
+    } else {
+        text.style.display = "none";
+    }
+}
+
+//function to set visibility of player 2 shipDef text
+function player2ShipDefTextVisibility(state) {
+    var text = document.getElementById("player2ShipPlacement");
+    if (state === SHIP_DEF_PLAYER2_PHASE) {
+        text.style.display = "inline-block";
+    } else {
+        text.style.display = "none";
+    }
+}
+
+//function to set visibility of canvasPlayer1Text
+function canvasPlayer1TextVisibility(state) {
+    var text = document.getElementById("canvasPlayer1Text");
+    switch (state) {
+        case PLAYER1_TURN:
+            text.style.display = "inline-block";
+            break;
+        case PLAYER2_TURN:
+            text.style.display = "inline-block";
+            break;
+        default:
+            text.style.display = "none";
+    }
+}
+
+//function to set visibility of canvasPlayer1Text
+function canvasPlayer2TextVisibility(state) {
+    var text = document.getElementById("canvasPlayer2Text");
+    switch (state) {
+        case PLAYER1_TURN:
+            text.style.display = "inline-block";
+            break;
+        case PLAYER2_TURN:
+            text.style.display = "inline-block";
+            break;
+        default:
+            text.style.display = "none";
     }
 }
 
