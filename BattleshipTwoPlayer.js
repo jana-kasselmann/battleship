@@ -14,16 +14,15 @@ var ENEMY = "enemy";
 var PLAYER1 = "player1";
 var PLAYER2 = "player2";
 
-var oCanvas = {
-    [PLAYER1]: {
-        canvas: document.getElementById("canvasPlayer1"),
-        ctx: document.getElementById("canvasPlayer1").getContext("2d")
-    },
-    [PLAYER2]: {
-        canvas: document.getElementById("canvasPlayer2"),
-        ctx: document.getElementById("canvasPlayer2").getContext("2d")
-    }
-}
+var oCanvas = {};
+oCanvas[PLAYER1] = {
+    canvas: document.getElementById("canvasPlayer1"),
+    ctx: document.getElementById("canvasPlayer1").getContext("2d")
+};
+oCanvas[PLAYER2] = {
+    canvas: document.getElementById("canvasPlayer2"),
+    ctx: document.getElementById("canvasPlayer2").getContext("2d")
+};
 
 var gridsPlayer1 = null;
 var gridsPlayer2 = null;
@@ -184,10 +183,10 @@ function initializeGrid(cellStatus) {
 }
 
 function initializeGrids(ownCellStatus, enemyCellStatus) {
-    return {
-        [OWN]: initializeGrid(ownCellStatus),
-        [ENEMY]: initializeGrid(enemyCellStatus)
-    };
+    var grids = {};
+    grids[OWN] = initializeGrid(ownCellStatus);
+    grids[ENEMY] = initializeGrid(enemyCellStatus);
+    return grids;
 }
 
 
@@ -301,7 +300,7 @@ function getGridCoordinates(event) {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    return { x, y }
+    return { x:x, y:y }
 }
 
 //function during player's turn to shoot at the computer's ships
@@ -310,7 +309,9 @@ function fnAttackPlayer1Turn(event) {
         return;
     }
 
-    var { x, y } = getGridCoordinates(event);
+    var coordinates = getGridCoordinates(event);
+    var x = coordinates.x;
+    var y = coordinates.y;
 
     if (event.currentTarget.id !== "canvasPlayer1") {
         return;
@@ -341,7 +342,9 @@ function fnAttackPlayer2Turn(event) {
         return;
     }
 
-    var { x, y } = getGridCoordinates(event);
+    var coordinates = getGridCoordinates(event);
+    var x = coordinates.x;
+    var y = coordinates.y;
 
     if (event.currentTarget.id !== "canvasPlayer2") {
         return;
