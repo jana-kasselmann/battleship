@@ -441,7 +441,7 @@ function fnSetButtonVisibility(state) {
 function gridSizeFormVisibility(state) {
     var form = document.getElementById("gridSizeForm");
     if (state === GRID_CONFIG_PHASE) {
-        form.style.display = "inline-block";
+        form.style.display = "flex";
     } else {
         form.style.display = "none";
     }
@@ -451,7 +451,7 @@ function gridSizeFormVisibility(state) {
 function zoomSliderVisibility(state) {
     var form = document.getElementById("cellSizeForm");
     if (state !== GRID_CONFIG_PHASE) {
-        form.style.display = "inline-block";
+        form.style.display = "flex";
     } else {
         form.style.display = "none";
     }
@@ -461,7 +461,7 @@ function zoomSliderVisibility(state) {
 function shipDefPlayer1ButtonVisibility(state) {
     var button = document.getElementById("shipDefPlayer1");
     if (state === GRID_CONFIG_PHASE) {
-        button.style.display = "inline-block";
+        button.style.display = "flex";
     } else {
         button.style.display = "none";
     }
@@ -471,7 +471,7 @@ function shipDefPlayer1ButtonVisibility(state) {
 function shipDefPlayer2ButtonVisibility(state) {
     var button = document.getElementById("shipDefPlayer2");
     if (state === SHIP_DEF_PLAYER1_PHASE) {
-        button.style.display = "inline-block";
+        button.style.display = "flex";
     } else {
         button.style.display = "none";
     }
@@ -481,7 +481,7 @@ function shipDefPlayer2ButtonVisibility(state) {
 function startGameButtonVisibility(state) {
     var button = document.getElementById("startGameButton");
     if (state === SHIP_DEF_PLAYER2_PHASE) {
-        button.style.display = "inline-block";
+        button.style.display = "flex";
     } else {
         button.style.display = "none";
     }
@@ -491,7 +491,7 @@ function startGameButtonVisibility(state) {
 function player1ShipDefTextVisibility(state) {
     var text = document.getElementById("player1ShipPlacement");
     if (state === SHIP_DEF_PLAYER1_PHASE) {
-        text.style.display = "inline-block";
+        text.style.display = "flex";
     } else {
         text.style.display = "none";
     }
@@ -501,7 +501,7 @@ function player1ShipDefTextVisibility(state) {
 function player2ShipDefTextVisibility(state) {
     var text = document.getElementById("player2ShipPlacement");
     if (state === SHIP_DEF_PLAYER2_PHASE) {
-        text.style.display = "inline-block";
+        text.style.display = "flex";
     } else {
         text.style.display = "none";
     }
@@ -512,10 +512,10 @@ function canvasPlayer1TextVisibility(state) {
     var text = document.getElementById("canvasPlayer1Text");
     switch (state) {
         case PLAYER1_TURN:
-            text.style.display = "inline-block";
+            text.style.display = "flex";
             break;
         case PLAYER2_TURN:
-            text.style.display = "inline-block";
+            text.style.display = "flex";
             break;
         default:
             text.style.display = "none";
@@ -527,10 +527,10 @@ function canvasPlayer2TextVisibility(state) {
     var text = document.getElementById("canvasPlayer2Text");
     switch (state) {
         case PLAYER1_TURN:
-            text.style.display = "inline-block";
+            text.style.display = "flex";
             break;
         case PLAYER2_TURN:
-            text.style.display = "inline-block";
+            text.style.display = "flex";
             break;
         default:
             text.style.display = "none";
@@ -541,7 +541,7 @@ function canvasPlayer2TextVisibility(state) {
 function newGameButtonVisibility(state) {
     var button = document.getElementById("newGameButton");
     if (state === GAME_END) {
-        button.style.display = "inline-block";
+        button.style.display = "flex";
     } else {
         button.style.display = "none";
     }
@@ -558,7 +558,7 @@ function canvasPlayer1Visibility(state) {
             canvas.style.display = "none";
             break;
         default:
-            canvas.style.display = "inline-block";
+            canvas.style.display = "flex";
     }
 }
 
@@ -573,7 +573,7 @@ function canvasPlayer2Visibility(state) {
             canvas.style.display = "none";
             break;
         default:
-            canvas.style.display = "inline-block";
+            canvas.style.display = "flex";
     }
 }
 
