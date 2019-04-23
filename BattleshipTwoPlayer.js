@@ -130,15 +130,17 @@ function fnStartGame() {
     }
 
 
-    if (equalNumberOfShips(gridsPlayer1, gridsPlayer2)) {
-        alert("You've marked too many cells. You need to mark " + countCellsInGrid(gridsPlayer1[OWN], SHIP) + " cells.");
+    if (!equalNumberOfShips(gridsPlayer1, gridsPlayer2)) {
+        alert("You haven't marked the correct number of ships. You need to mark " + countCellsInGrid(gridsPlayer1[OWN], SHIP) + " cells.");
         return;
     }
 
     fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
     fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
     updateGameState(PLAYER1_TURN);
-    alert("It's player 1's turn. Click on a cell to try shooting at your opponent's ships.")
+    setTimeout(function() {
+        alert("It's player 1's turn. Click on a cell to try shooting at your opponent's ships.");
+    }, 0);
 }
 
 function fnIsPlayer2Ready() {
@@ -300,7 +302,7 @@ function getGridCoordinates(event) {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    return { x:x, y:y }
+    return { x: x, y: y }
 }
 
 //function during player's turn to shoot at the computer's ships
@@ -373,8 +375,7 @@ function fnAttackPlayer2Turn(event) {
 function equalNumberOfShips(gridPlayer1, gridPlayer2) {
     var player1ShipCount = countCellsInGrid(gridPlayer1[OWN], SHIP);
     var player2ShipCount = countCellsInGrid(gridPlayer2[OWN], SHIP);
-    var shipNumberComparison = player2ShipCount > player1ShipCount;
-    return shipNumberComparison;
+    return player2ShipCount === player1ShipCount;
 }
 
 //count cells with certain status in grid
@@ -413,6 +414,12 @@ function fnShootAtEnemy(grid) {
             return;
     }
 }
+//function to start a new game
+function newGame() {
+    updateGameState(GRID_CONFIG_PHASE);
+    fnInit();
+    configureGrid();
+}
 
 //function to set visibility of all buttons
 function fnSetButtonVisibility(state) {
@@ -425,6 +432,7 @@ function fnSetButtonVisibility(state) {
     player2ShipDefTextVisibility(state);
     canvasPlayer1TextVisibility(state);
     canvasPlayer2TextVisibility(state);
+    newGameButtonVisibility(state);
     canvasPlayer1Visibility(state);
     canvasPlayer2Visibility(state);
 }
@@ -526,6 +534,16 @@ function canvasPlayer2TextVisibility(state) {
             break;
         default:
             text.style.display = "none";
+    }
+}
+
+//function to set visibility of new game button
+function newGameButtonVisibility(state) {
+    var button = document.getElementById("newGameButton");
+    if (state === GAME_END) {
+        button.style.display = "inline-block";
+    } else {
+        button.style.display = "none";
     }
 }
 
