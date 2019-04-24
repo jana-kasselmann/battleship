@@ -80,13 +80,23 @@ var fnInit = function () {
 }
 
 //function to update the grid size based on user input
-var fnChangeGridSize = function (number) {
+var changeGridSize = function (number) {
+    if (parseInt(number) < 3 || parseInt(number) > 50) {
+        alert("The grid size must be a number between 3 and 50.");
+        document.getElementById("gridSize").value = gridSize;
+        return;
+    }
     gridSize = parseInt(number);
     fnInit();
 }
 
 //function to update the number of ships based on user input
 var changeNumberOfShips = function (number) {
+    if (parseInt(number) < 1 || parseInt(number) > gridSize * gridSize) {
+        alert("The number of ships must be between 1 and " + gridSize * gridSize + ".");
+        document.getElementById("numberOfShips").value = numberOfShips;
+        return;
+    }
     numberOfShips = parseInt(number);
 }
 
