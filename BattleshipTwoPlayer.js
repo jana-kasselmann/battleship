@@ -475,193 +475,34 @@ function triggerConfetti() {
 
 //function to set visibility of all buttons
 function fnSetButtonVisibility(state, winner) {
-    gridSizeFormVisibility(state);
-    numberOfShipsFormVisibility(state);
-    zoomSliderVisibility(state);
-    shipDefPlayer1ButtonVisibility(state);
-    shipDefPlayer2ButtonVisibility(state);
-    startGameButtonVisibility(state);
-    player1ShipDefTextVisibility(state);
-    player2ShipDefTextVisibility(state);
-    canvasPlayer1TextVisibility(state);
-    canvasPlayer2TextVisibility(state);
-    winnerTextVisibility(state, winner);
-    newGameButtonVisibility(state);
-    canvasPlayer1Visibility(state);
-    canvasPlayer2Visibility(state);
+    changeVisibility("gridSizeForm", state === GRID_CONFIG_PHASE);
+    changeVisibility("numberOfShipsForm", state === GRID_CONFIG_PHASE);
+    changeVisibility("cellSizeForm", state !== GRID_CONFIG_PHASE);
+    changeVisibility("shipDefPlayer1", state === GRID_CONFIG_PHASE);
+    changeVisibility("shipDefPlayer2", state === SHIP_DEF_PLAYER1_PHASE);
+    changeVisibility("startGameButton", state === SHIP_DEF_PLAYER2_PHASE);
+    changeVisibility("player1ShipPlacement", state === SHIP_DEF_PLAYER1_PHASE);
+    changeVisibility("player2ShipPlacement", state === SHIP_DEF_PLAYER2_PHASE);
+    changeVisibility("canvasPlayer1Text", 
+        state === PLAYER1_TURN || state === PLAYER2_TURN || state === GAME_END
+    );
+    changeVisibility("canvasPlayer2Text", 
+        state === PLAYER1_TURN || state === PLAYER2_TURN || state === GAME_END
+    );
+    changeVisibility("player1Winner",
+        state === GAME_END && winner === PLAYER1
+    );
+    changeVisibility("player2Winner",
+        state === GAME_END && winner === PLAYER2
+    );
+    changeVisibility("newGameButton", state === GAME_END);
+    changeVisibility("canvasPlayer1", state !== GRID_CONFIG_PHASE && state !== SHIP_DEF_PLAYER2_PHASE);
+    changeVisibility("canvasPlayer2", state !== GRID_CONFIG_PHASE && state !== SHIP_DEF_PLAYER1_PHASE);
 }
 
-//function to set visibility of grid size input field
-function gridSizeFormVisibility(state) {
-    var form = document.getElementById("gridSizeForm");
-    if (state === GRID_CONFIG_PHASE) {
-        form.style.display = "flex";
-    } else {
-        form.style.display = "none";
-    }
-}
-
-//function to set visibility of number of ships input field
-function numberOfShipsFormVisibility(state) {
-    var form = document.getElementById("numberOfShipsForm");
-    if (state === GRID_CONFIG_PHASE) {
-        form.style.display = "flex";
-    } else {
-        form.style.display = "none";
-    }
-}
-
-//function to set visibility of zoom slider
-function zoomSliderVisibility(state) {
-    var form = document.getElementById("cellSizeForm");
-    if (state !== GRID_CONFIG_PHASE) {
-        form.style.display = "flex";
-    } else {
-        form.style.display = "none";
-    }
-}
-
-//function to set visibility of start button
-function shipDefPlayer1ButtonVisibility(state) {
-    var button = document.getElementById("shipDefPlayer1");
-    if (state === GRID_CONFIG_PHASE) {
-        button.style.display = "flex";
-    } else {
-        button.style.display = "none";
-    }
-}
-
-//function to set visibility of next button
-function shipDefPlayer2ButtonVisibility(state) {
-    var button = document.getElementById("shipDefPlayer2");
-    if (state === SHIP_DEF_PLAYER1_PHASE) {
-        button.style.display = "flex";
-    } else {
-        button.style.display = "none";
-    }
-}
-
-//function to set visibility of start game button
-function startGameButtonVisibility(state) {
-    var button = document.getElementById("startGameButton");
-    if (state === SHIP_DEF_PLAYER2_PHASE) {
-        button.style.display = "flex";
-    } else {
-        button.style.display = "none";
-    }
-}
-
-//function to set visibility of player 1 shipDef text
-function player1ShipDefTextVisibility(state) {
-    var text = document.getElementById("player1ShipPlacement");
-    if (state === SHIP_DEF_PLAYER1_PHASE) {
-        text.style.display = "flex";
-    } else {
-        text.style.display = "none";
-    }
-}
-
-//function to set visibility of player 2 shipDef text
-function player2ShipDefTextVisibility(state) {
-    var text = document.getElementById("player2ShipPlacement");
-    if (state === SHIP_DEF_PLAYER2_PHASE) {
-        text.style.display = "flex";
-    } else {
-        text.style.display = "none";
-    }
-}
-
-//function to set visibility of canvasPlayer1Text
-function canvasPlayer1TextVisibility(state) {
-    var text = document.getElementById("canvasPlayer1Text");
-    switch (state) {
-        case PLAYER1_TURN:
-            text.style.display = "flex";
-            break;
-        case PLAYER2_TURN:
-            text.style.display = "flex";
-            break;
-        default:
-            text.style.display = "none";
-    }
-}
-
-//function to set visibility of canvasPlayer1Text
-function canvasPlayer2TextVisibility(state) {
-    var text = document.getElementById("canvasPlayer2Text");
-    switch (state) {
-        case PLAYER1_TURN:
-            text.style.display = "flex";
-            break;
-        case PLAYER2_TURN:
-            text.style.display = "flex";
-            break;
-        default:
-            text.style.display = "none";
-    }
-}
-
-//function to set visibility of player 1 winner text
-function winnerTextVisibility(state, winner) {
-    var textPlayer1 = document.getElementById("player1Winner");
-    var textPlayer2 = document.getElementById("player2Winner");
-    if (state === GAME_END) {
-        switch (winner) {
-            case PLAYER1:
-                textPlayer1.style.display = "flex";
-                textPlayer2.style.display = "none";
-                break;
-            case PLAYER2:
-                textPlayer1.style.display = "none";
-                textPlayer2.style.display = "flex";
-                break;
-            default:
-                console.log("Error");
-        }
-    } else {
-        textPlayer1.style.display = "none";
-        textPlayer2.style.display = "none";
-    }
-}
-
-//function to set visibility of new game button
-function newGameButtonVisibility(state) {
-    var button = document.getElementById("newGameButton");
-    if (state === GAME_END) {
-        button.style.display = "flex";
-    } else {
-        button.style.display = "none";
-    }
-}
-
-//function to set visibility of canvas player 1
-function canvasPlayer1Visibility(state) {
-    var canvas = document.getElementById("canvasPlayer1");
-    switch (state) {
-        case GRID_CONFIG_PHASE:
-            canvas.style.display = "none";
-            break;
-        case SHIP_DEF_PLAYER2_PHASE:
-            canvas.style.display = "none";
-            break;
-        default:
-            canvas.style.display = "flex";
-    }
-}
-
-//function to set visibility of canvas player 2
-function canvasPlayer2Visibility(state) {
-    var canvas = document.getElementById("canvasPlayer2");
-    switch (state) {
-        case GRID_CONFIG_PHASE:
-            canvas.style.display = "none";
-            break;
-        case SHIP_DEF_PLAYER1_PHASE:
-            canvas.style.display = "none";
-            break;
-        default:
-            canvas.style.display = "flex";
-    }
+function changeVisibility(elementId, isVisible) {
+    var element = document.getElementById(elementId);
+    element.style.display = isVisible ? "flex" : "none";
 }
 
 //--------------------------------------------------------------
