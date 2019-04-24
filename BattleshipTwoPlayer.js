@@ -297,6 +297,8 @@ function fnEventFromGameState(event) {
         case PLAYER2_TURN:
             fnAttackPlayer2Turn(event);
             break;
+        case GAME_END:
+            return;
         default:
             alert("You can't change the position of your ships during the game.");
             return;
