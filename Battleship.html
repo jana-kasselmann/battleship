@@ -28,16 +28,22 @@
       </div>
     </form>
 
+    <form id="nameInputForm">
+      <label>Name:</label>
+      <div class="input-wrap">
+        <input type="text" id="nameInput" onchange="savePlayerName(this.value)">
+      </div>
+    </form>
 
-    <p id="player1ShipPlacement">Player 1, click on the cells to place your ships.</p>
+    <p id="player1ShipPlacement">Click on the cells to place your ships.</p>
 
-    <p id="player2ShipPlacement">Player 2, click on the cells to place your ships.</p>
+    <p id="player2ShipPlacement">Click on the cells to place your ships.</p>
 
-    <p id="canvasPlayer1Text">Player 1</p>
+    <p id="canvasPlayer1Text"></p>
 
     <canvas id="canvasPlayer1" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas>
 
-    <p id="canvasPlayer2Text">Player 2</p>
+    <p id="canvasPlayer2Text"></p>
 
     <canvas id="canvasPlayer2" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas>
 
@@ -52,9 +58,9 @@
 
     <button type="button" id="startGameButton" onclick="fnStartGame()">Start Game</button>
 
-    <p id="player1Winner">Player 1 has won.</p>
+    <p id="player1Winner"></p>
 
-    <p id="player2Winner">Player 2 has won.</p>
+    <p id="player2Winner"></p>
 
     <button type="button" id="newGameButton" onclick="newGame()">New Game</button>
   </div>

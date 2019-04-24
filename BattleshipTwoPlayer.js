@@ -28,6 +28,8 @@ var gridsPlayer1 = null;
 var gridsPlayer2 = null;
 var gameState = null;
 var numberOfShips = 20;
+var player1Name = null;
+var player2Name = null;
 
 //draw initial grids
 var gridSize = 10;
@@ -128,10 +130,30 @@ var fnChangeCellSize = function (number) {
     }
 }
 
+//function to save the player's name
+function savePlayerName (name) {
+    switch (gameState) {
+        case SHIP_DEF_PLAYER1_PHASE:
+            player1Name = name;
+            break;
+        case SHIP_DEF_PLAYER2_PHASE:
+            player2Name = name;
+            break;
+        default:
+            console.log("Error");
+    }
+}
+
+
 //function to check if player 1 has configured ships
 function checkPlayer1Readiness() {
+    if (player1Name === null) {
+        alert("Please enter your name.");
+        return;
+    }
+
     if (!player1IsReady()) {
-        alert("Player 1: Click on the grid to define the position of your ships.");
+        alert("Click on the grid to define the position of your ships.");
         return;
     }
 
@@ -140,13 +162,19 @@ function checkPlayer1Readiness() {
         return;
     }
     updateGameState(SHIP_DEF_PLAYER2_PHASE);
+    document.getElementById("nameInput").value = null;
 }
 
 //function executed when the player starts the game to set the correct state
 function fnStartGame() {
     //check if ships have been defined for player and computer
+    if (player2Name === null) {
+        alert("Please enter your name.");
+        return;
+    }
+
     if (!fnIsPlayer2Ready()) {
-        alert("Player 2: Click on the grid to define the position of your ships.");
+        alert("Click on the grid to define the position of your ships.");
         return;
     }
 
@@ -158,8 +186,12 @@ function fnStartGame() {
     fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
     fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
     updateGameState(PLAYER1_TURN);
+    document.getElementById("canvasPlayer1Text").innerHTML = player1Name;
+    document.getElementById("canvasPlayer2Text").innerHTML = player2Name;
+    document.getElementById("nameInput").value = null;
+
     setTimeout(function () {
-        alert("It's player 1's turn. Click on a cell to try shooting at your opponent's ships.");
+        alert("It's " + player1Name + "'s turn. Click on a cell to try shooting at your opponent's ships.");
     }, 0);
 }
 
@@ -353,6 +385,7 @@ function fnAttackPlayer1Turn(event) {
     if (gameIsOver(gridsPlayer1, gridsPlayer2)) {
         triggerConfetti();
         updateGameState(GAME_END, PLAYER1);
+        document.getElementById("player1Winner").innerHTML = player1Name + " has won.";
         return;
     }
 
@@ -386,6 +419,7 @@ function fnAttackPlayer2Turn(event) {
     if (gameIsOver(gridsPlayer2, gridsPlayer1)) {
         triggerConfetti();
         updateGameState(GAME_END, PLAYER2);
+        document.getElementById("player2Winner").innerHTML = player2Name + " has won.";
         return;
     }
     if (cellStatus === MISSED) {
@@ -483,6 +517,9 @@ function fnSetButtonVisibility(state, winner) {
     changeVisibility("startGameButton", state === SHIP_DEF_PLAYER2_PHASE);
     changeVisibility("player1ShipPlacement", state === SHIP_DEF_PLAYER1_PHASE);
     changeVisibility("player2ShipPlacement", state === SHIP_DEF_PLAYER2_PHASE);
+    changeVisibility("nameInputForm", 
+        state === SHIP_DEF_PLAYER1_PHASE || state === SHIP_DEF_PLAYER2_PHASE
+    );
     changeVisibility("canvasPlayer1Text", 
         state === PLAYER1_TURN || state === PLAYER2_TURN || state === GAME_END
     );
