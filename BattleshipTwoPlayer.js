@@ -14,12 +14,12 @@ var ENEMY = "enemy";
 var PLAYER1 = "player1";
 var PLAYER2 = "player2";
 
-var oCanvas = {};
-oCanvas[PLAYER1] = {
+var canvas = {};
+canvas[PLAYER1] = {
     canvas: document.getElementById("canvasPlayer1"),
     ctx: document.getElementById("canvasPlayer1").getContext("2d")
 };
-oCanvas[PLAYER2] = {
+canvas[PLAYER2] = {
     canvas: document.getElementById("canvasPlayer2"),
     ctx: document.getElementById("canvasPlayer2").getContext("2d")
 };
@@ -35,17 +35,17 @@ var player2Name = null;
 var gridSize = 10;
 var cellSize = 30;
 
-function fnDrawBattleGrounds() {
-    fnDrawGrid(oCanvas[PLAYER1]);
-    fnDrawGrid(oCanvas[PLAYER2]);
+function drawBattleGrounds() {
+    fnDrawGrid(canvas[PLAYER1]);
+    fnDrawGrid(canvas[PLAYER2]);
 }
 
-function fnDrawGrid(oTargetCanvas) {
-    oTargetCanvas.canvas.width = gridSize * cellSize;
-    oTargetCanvas.canvas.height = gridSize * cellSize;
+function fnDrawGrid(targetCanvas) {
+    targetCanvas.canvas.width = gridSize * cellSize;
+    targetCanvas.canvas.height = gridSize * cellSize;
 
-    oTargetCanvas.ctx.strokeStyle = "black";
-    oTargetCanvas.ctx.lineWidth = 2;
+    targetCanvas.ctx.strokeStyle = "black";
+    targetCanvas.ctx.lineWidth = 2;
 
     var x = 0;
     var y = 0;
@@ -53,10 +53,10 @@ function fnDrawGrid(oTargetCanvas) {
     var yTo = (gridSize * cellSize);
 
     for (var i = 0; i <= gridSize; i++) {
-        oTargetCanvas.ctx.beginPath();
-        oTargetCanvas.ctx.moveTo(x, y);
-        oTargetCanvas.ctx.lineTo(xTo, yTo);
-        oTargetCanvas.ctx.stroke();
+        targetCanvas.ctx.beginPath();
+        targetCanvas.ctx.moveTo(x, y);
+        targetCanvas.ctx.lineTo(xTo, yTo);
+        targetCanvas.ctx.stroke();
         x = x + cellSize;
         xTo = xTo + cellSize;
     }
@@ -67,33 +67,33 @@ function fnDrawGrid(oTargetCanvas) {
     yTo = 0;
 
     for (i = 0; i <= gridSize; i++) {
-        oTargetCanvas.ctx.beginPath();
-        oTargetCanvas.ctx.moveTo(x, y);
-        oTargetCanvas.ctx.lineTo(xTo, yTo);
-        oTargetCanvas.ctx.stroke();
+        targetCanvas.ctx.beginPath();
+        targetCanvas.ctx.moveTo(x, y);
+        targetCanvas.ctx.lineTo(xTo, yTo);
+        targetCanvas.ctx.stroke();
         y = y + cellSize;
         yTo = yTo + cellSize;
     }
 }
 
-var fnInit = function () {
-    fnDrawBattleGrounds();
-    fnInitializeShipsAndWater();
+function init() {
+    drawBattleGrounds();
+    initializeShipsAndWater();
 }
 
 //function to update the grid size based on user input
-var changeGridSize = function (number) {
+function changeGridSize(number) {
     if (parseInt(number) < 3 || parseInt(number) > 50) {
         alert("The grid size must be a number between 3 and 50.");
         document.getElementById("gridSize").value = gridSize;
         return;
     }
     gridSize = parseInt(number);
-    fnInit();
+    init();
 }
 
 //function to update the number of ships based on user input
-var changeNumberOfShips = function (number) {
+function changeNumberOfShips(number) {
     if (parseInt(number) < 1 || parseInt(number) > gridSize * gridSize) {
         alert("The number of ships must be between 1 and " + gridSize * gridSize + ".");
         document.getElementById("numberOfShips").value = numberOfShips;
@@ -103,35 +103,35 @@ var changeNumberOfShips = function (number) {
 }
 
 //function to zoom the canvas size based on user input
-var fnChangeCellSize = function (number) {
+function changeCellSize(number) {
     cellSize = parseInt(number);
-    fnDrawBattleGrounds();
+    drawBattleGrounds();
     switch (gameState) {
         case SHIP_DEF_PLAYER1_PHASE:
-            fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[OWN]);
-            fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[OWN]);
+            setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[OWN]);
+            setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[OWN]);
             break;
         case SHIP_DEF_PLAYER2_PHASE:
-            fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[OWN]);
-            fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[OWN]);
+            setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[OWN]);
+            setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[OWN]);
             break;
         case PLAYER1_TURN:
-            fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
-            fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
+            setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
+            setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
             break;
         case PLAYER2_TURN:
-            fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
-            fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
+            setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
+            setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
             break;
         case GAME_END:
-            fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
-            fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
+            setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
+            setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
             break;
     }
 }
 
 //function to save the player's name
-function savePlayerName (name) {
+function savePlayerName(name) {
     switch (gameState) {
         case SHIP_DEF_PLAYER1_PHASE:
             player1Name = name;
@@ -166,7 +166,7 @@ function checkPlayer1Readiness() {
 }
 
 //function executed when the player starts the game to set the correct state
-function fnStartGame() {
+function startGame() {
     //check if ships have been defined for player and computer
     if (player2Name === null) {
         alert("Please enter your name.");
@@ -183,8 +183,8 @@ function fnStartGame() {
         return;
     }
 
-    fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
-    fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
+    setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
+    setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
     updateGameState(PLAYER1_TURN);
     document.getElementById("canvasPlayer1Text").innerHTML = player1Name;
     document.getElementById("canvasPlayer2Text").innerHTML = player2Name;
@@ -218,11 +218,11 @@ function player1IsReady() {
 }
 
 //function for initializing the cell colors
-var fnInitializeShipsAndWater = function () {
+var initializeShipsAndWater = function () {
     gridsPlayer1 = initializeGrids(WATER, UNEXPLORED);
     gridsPlayer2 = initializeGrids(WATER, UNEXPLORED);
-    fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[OWN]);
-    fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[OWN]);
+    setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[OWN]);
+    setCellColors(canvas[PLAYER2].ctx, gridsPlayer2[OWN]);
 }
 
 function initializeGrid(cellStatus) {
@@ -244,7 +244,7 @@ function initializeGrids(ownCellStatus, enemyCellStatus) {
 }
 
 
-function fnColorFromStatus(status) {
+function colorFromStatus(status) {
     switch (status) {
         case WATER:
             return "#94b4e8";
@@ -263,17 +263,17 @@ function fnColorFromStatus(status) {
 }
 
 //function to decide how to color the cells
-function fnSetCellColors(ctx, grid) {
+function setCellColors(ctx, grid) {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
-            fnColorCells(ctx, grid, x, y);
+            colorCells(ctx, grid, x, y);
         }
     }
 }
 
 //function to color the cells
-function fnColorCells(ctx, grid, x, y) {
-    var color = fnColorFromStatus(grid[x][y]);
+function colorCells(ctx, grid, x, y) {
+    var color = colorFromStatus(grid[x][y]);
     var xStartRectangle, yStartRectangle;
     xStartRectangle = (x * cellSize) + 1;
     yStartRectangle = (y * cellSize) + 1;
@@ -282,7 +282,7 @@ function fnColorCells(ctx, grid, x, y) {
 }
 
 //function to define the cell status for marking the clicked cell
-function fnGetCellStatus(status) {
+function getCellStatus(status) {
     switch (status) {
         case WATER:
             return SHIP;
@@ -295,7 +295,7 @@ function fnGetCellStatus(status) {
 }
 
 //function for player 1's definition of own ships
-function fnDefinePlayer1Ships() {
+function definePlayer1Ships() {
     var canvasElement = event.target;
     var x = event.pageX - canvasElement.offsetLeft;
     var y = event.pageY - canvasElement.offsetTop;
@@ -303,14 +303,14 @@ function fnDefinePlayer1Ships() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(gridsPlayer1[OWN][x][y]);
+    var cellStatus = getCellStatus(gridsPlayer1[OWN][x][y]);
     gridsPlayer1[OWN][x][y] = cellStatus;
-    fnColorCells(oCanvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
+    colorCells(canvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
     updateGameState(SHIP_DEF_PLAYER1_PHASE);
 }
 
 //function to define player 2's ships
-function fnDefinePlayer2Ships() {
+function definePlayer2Ships() {
     var canvasElement = event.target;
     var x = event.pageX - canvasElement.offsetLeft;
     var y = event.pageY - canvasElement.offsetTop;
@@ -318,26 +318,26 @@ function fnDefinePlayer2Ships() {
     x = Math.floor(x / cellSize);
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
-    var cellStatus = fnGetCellStatus(gridsPlayer2[OWN][x][y]);
+    var cellStatus = getCellStatus(gridsPlayer2[OWN][x][y]);
     gridsPlayer2[OWN][x][y] = cellStatus;
-    fnColorCells(oCanvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
+    colorCells(canvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
     updateGameState(SHIP_DEF_PLAYER2_PHASE);
 }
 
 //function to mark clicked cell in shipDefPlayer as ship
-function fnEventFromGameState(event) {
+function functionFromGameState(event) {
     switch (gameState) {
         case SHIP_DEF_PLAYER1_PHASE:
-            fnDefinePlayer1Ships();
+            definePlayer1Ships();
             break;
         case SHIP_DEF_PLAYER2_PHASE:
-            fnDefinePlayer2Ships();
+            definePlayer2Ships();
             break;
         case PLAYER1_TURN:
-            fnAttackPlayer1Turn(event);
+            attackPlayer1Turn(event);
             break;
         case PLAYER2_TURN:
-            fnAttackPlayer2Turn(event);
+            attackPlayer2Turn(event);
             break;
         case GAME_END:
             return;
@@ -360,7 +360,7 @@ function getGridCoordinates(event) {
 }
 
 //function during player's turn to shoot at the computer's ships
-function fnAttackPlayer1Turn(event) {
+function attackPlayer1Turn(event) {
     if (gameState !== PLAYER1_TURN) {
         return;
     }
@@ -378,9 +378,9 @@ function fnAttackPlayer1Turn(event) {
         return;
     }
 
-    var cellStatus = fnShootAtEnemy(gridsPlayer2[OWN][x][y]);
+    var cellStatus = shootAtEnemy(gridsPlayer2[OWN][x][y]);
     gridsPlayer1[ENEMY][x][y] = cellStatus;
-    fnColorCells(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY], x, y);
+    colorCells(canvas[PLAYER1].ctx, gridsPlayer1[ENEMY], x, y);
 
     if (gameIsOver(gridsPlayer1, gridsPlayer2)) {
         triggerConfetti();
@@ -394,7 +394,7 @@ function fnAttackPlayer1Turn(event) {
     }
 }
 
-function fnAttackPlayer2Turn(event) {
+function attackPlayer2Turn(event) {
     if (gameState !== PLAYER2_TURN) {
         return;
     }
@@ -412,9 +412,9 @@ function fnAttackPlayer2Turn(event) {
         return;
     }
 
-    var cellStatus = fnShootAtEnemy(gridsPlayer1[OWN][x][y]);
+    var cellStatus = shootAtEnemy(gridsPlayer1[OWN][x][y]);
     gridsPlayer2[ENEMY][x][y] = cellStatus;
-    fnColorCells(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY], x, y);
+    colorCells(canvas[PLAYER2].ctx, gridsPlayer2[ENEMY], x, y);
 
     if (gameIsOver(gridsPlayer2, gridsPlayer1)) {
         triggerConfetti();
@@ -461,10 +461,10 @@ function gameIsOver(gridCurrentPlayer, gridOpponent) {
 
 function updateGameState(newState, winner) {
     gameState = newState;
-    fnSetButtonVisibility(gameState, winner);
+    setButtonVisibility(gameState, winner);
 }
 
-function fnShootAtEnemy(grid) {
+function shootAtEnemy(grid) {
     switch (grid) {
         case WATER:
             return MISSED;
@@ -478,7 +478,7 @@ function fnShootAtEnemy(grid) {
 //function to start a new game
 function newGame() {
     updateGameState(GRID_CONFIG_PHASE);
-    fnInit();
+    init();
     configureGrid();
 }
 
@@ -508,7 +508,7 @@ function triggerConfetti() {
 }
 
 //function to set visibility of all buttons
-function fnSetButtonVisibility(state, winner) {
+function setButtonVisibility(state, winner) {
     changeVisibility("gridSizeForm", state === GRID_CONFIG_PHASE);
     changeVisibility("numberOfShipsForm", state === GRID_CONFIG_PHASE);
     changeVisibility("cellSizeForm", state !== GRID_CONFIG_PHASE);
@@ -517,13 +517,13 @@ function fnSetButtonVisibility(state, winner) {
     changeVisibility("startGameButton", state === SHIP_DEF_PLAYER2_PHASE);
     changeVisibility("player1ShipPlacement", state === SHIP_DEF_PLAYER1_PHASE);
     changeVisibility("player2ShipPlacement", state === SHIP_DEF_PLAYER2_PHASE);
-    changeVisibility("nameInputForm", 
+    changeVisibility("nameInputForm",
         state === SHIP_DEF_PLAYER1_PHASE || state === SHIP_DEF_PLAYER2_PHASE
     );
-    changeVisibility("canvasPlayer1Text", 
+    changeVisibility("canvasPlayer1Text",
         state === PLAYER1_TURN || state === PLAYER2_TURN || state === GAME_END
     );
-    changeVisibility("canvasPlayer2Text", 
+    changeVisibility("canvasPlayer2Text",
         state === PLAYER1_TURN || state === PLAYER2_TURN || state === GAME_END
     );
     changeVisibility("player1Winner",
@@ -544,10 +544,10 @@ function changeVisibility(elementId, isVisible) {
 
 //--------------------------------------------------------------
 function configureGrid() {
-    fnSetButtonVisibility(GRID_CONFIG_PHASE);
+    setButtonVisibility(GRID_CONFIG_PHASE);
     updateGameState(GRID_CONFIG_PHASE);
 }
 
-fnInit();
+init();
 configureGrid();
 

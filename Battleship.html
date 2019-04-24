@@ -41,22 +41,22 @@
 
     <p id="canvasPlayer1Text"></p>
 
-    <canvas id="canvasPlayer1" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas>
+    <canvas id="canvasPlayer1" style="border:1px black solid" onclick="functionFromGameState(event)"></canvas>
 
     <p id="canvasPlayer2Text"></p>
 
-    <canvas id="canvasPlayer2" style="border:1px black solid" onclick="fnEventFromGameState(event)"></canvas>
+    <canvas id="canvasPlayer2" style="border:1px black solid" onclick="functionFromGameState(event)"></canvas>
 
 
 
     <form id="cellSizeForm">Zoom: <input type="range" id="cellSize" value="30" min="20" max="50"
-        onchange="fnChangeCellSize(this.value)"></form>
+        onchange="changeCellSize(this.value)"></form>
 
     <button type="button" id="shipDefPlayer1" onclick="updateGameState(SHIP_DEF_PLAYER1_PHASE)">Start</button>
 
     <button type="button" id="shipDefPlayer2" onclick="checkPlayer1Readiness()">Next</button>
 
-    <button type="button" id="startGameButton" onclick="fnStartGame()">Start Game</button>
+    <button type="button" id="startGameButton" onclick="startGame()">Start Game</button>
 
     <p id="player1Winner"></p>
 
