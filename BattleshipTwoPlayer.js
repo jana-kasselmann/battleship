@@ -148,7 +148,7 @@ function fnStartGame() {
     fnSetCellColors(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY]);
     fnSetCellColors(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY]);
     updateGameState(PLAYER1_TURN);
-    setTimeout(function() {
+    setTimeout(function () {
         alert("It's player 1's turn. Click on a cell to try shooting at your opponent's ships.");
     }, 0);
 }
@@ -341,8 +341,8 @@ function fnAttackPlayer1Turn(event) {
     fnColorCells(oCanvas[PLAYER1].ctx, gridsPlayer1[ENEMY], x, y);
 
     if (gameIsOver(gridsPlayer1, gridsPlayer2)) {
-        alert("Player 1 has won.")
-        updateGameState(GAME_END);
+        triggerConfetti();
+        updateGameState(GAME_END, PLAYER1);
         return;
     }
 
@@ -374,8 +374,8 @@ function fnAttackPlayer2Turn(event) {
     fnColorCells(oCanvas[PLAYER2].ctx, gridsPlayer2[ENEMY], x, y);
 
     if (gameIsOver(gridsPlayer2, gridsPlayer1)) {
-        alert("Player 2 has won.")
-        updateGameState(GAME_END);
+        triggerConfetti();
+        updateGameState(GAME_END, PLAYER2);
         return;
     }
     if (cellStatus === MISSED) {
@@ -387,7 +387,7 @@ function fnAttackPlayer2Turn(event) {
 function correctNumberOfShips(phase, gridPlayer1, gridPlayer2) {
     var player1ShipCount = countCellsInGrid(gridPlayer1[OWN], SHIP);
     var player2ShipCount = countCellsInGrid(gridPlayer2[OWN], SHIP);
-    switch(phase) {
+    switch (phase) {
         case SHIP_DEF_PLAYER1_PHASE:
             return player1ShipCount === numberOfShips;
         case SHIP_DEF_PLAYER2_PHASE:
@@ -415,9 +415,9 @@ function gameIsOver(gridCurrentPlayer, gridOpponent) {
     return hitCount === shipCount;
 }
 
-function updateGameState(newState) {
+function updateGameState(newState, winner) {
     gameState = newState;
-    fnSetButtonVisibility(gameState);
+    fnSetButtonVisibility(gameState, winner);
 }
 
 function fnShootAtEnemy(grid) {
@@ -438,8 +438,33 @@ function newGame() {
     configureGrid();
 }
 
+function randomInt(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function triggerConfetti() {
+    var end = Date.now() + (15 * 1000);
+
+    var interval = setInterval(function () {
+        if (Date.now() > end) {
+            return clearInterval(interval);
+        }
+
+        confetti({
+            startVelocity: 30,
+            spread: 360,
+            ticks: 60,
+            origin: {
+                x: Math.random(),
+                // since they fall down, start a bit higher than random
+                y: Math.random() - 0.2
+            }
+        });
+    }, 200);
+}
+
 //function to set visibility of all buttons
-function fnSetButtonVisibility(state) {
+function fnSetButtonVisibility(state, winner) {
     gridSizeFormVisibility(state);
     numberOfShipsFormVisibility(state);
     zoomSliderVisibility(state);
@@ -450,6 +475,7 @@ function fnSetButtonVisibility(state) {
     player2ShipDefTextVisibility(state);
     canvasPlayer1TextVisibility(state);
     canvasPlayer2TextVisibility(state);
+    winnerTextVisibility(state, winner);
     newGameButtonVisibility(state);
     canvasPlayer1Visibility(state);
     canvasPlayer2Visibility(state);
@@ -562,6 +588,29 @@ function canvasPlayer2TextVisibility(state) {
             break;
         default:
             text.style.display = "none";
+    }
+}
+
+//function to set visibility of player 1 winner text
+function winnerTextVisibility(state, winner) {
+    var textPlayer1 = document.getElementById("player1Winner");
+    var textPlayer2 = document.getElementById("player2Winner");
+    if (state === GAME_END) {
+        switch (winner) {
+            case PLAYER1:
+                textPlayer1.style.display = "flex";
+                textPlayer2.style.display = "none";
+                break;
+            case PLAYER2:
+                textPlayer1.style.display = "none";
+                textPlayer2.style.display = "flex";
+                break;
+            default:
+                console.log("Error");
+        }
+    } else {
+        textPlayer1.style.display = "none";
+        textPlayer2.style.display = "none";
     }
 }
 
