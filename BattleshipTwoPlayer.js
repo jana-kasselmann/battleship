@@ -27,6 +27,7 @@ oCanvas[PLAYER2] = {
 var gridsPlayer1 = null;
 var gridsPlayer2 = null;
 var gameState = null;
+var numberOfShips = 20;
 
 //draw initial grids
 var gridSize = 10;
@@ -84,6 +85,11 @@ var fnChangeGridSize = function (number) {
     fnInit();
 }
 
+//function to update the number of ships based on user input
+var changeNumberOfShips = function (number) {
+    numberOfShips = parseInt(number);
+}
+
 //function to zoom the canvas size based on user input
 var fnChangeCellSize = function (number) {
     cellSize = parseInt(number);
@@ -114,8 +120,13 @@ var fnChangeCellSize = function (number) {
 
 //function to check if player 1 has configured ships
 function checkPlayer1Readiness() {
-    if (!fnIsPlayer1Ready()) {
+    if (!player1IsReady()) {
         alert("Player 1: Click on the grid to define the position of your ships.");
+        return;
+    }
+
+    if (!correctNumberOfShips(SHIP_DEF_PLAYER1_PHASE, gridsPlayer1, gridsPlayer2)) {
+        alert("You've marked " + countCellsInGrid(gridsPlayer1[OWN], SHIP) + " cells as ships. You need to mark " + numberOfShips + " cells.");
         return;
     }
     updateGameState(SHIP_DEF_PLAYER2_PHASE);
@@ -129,9 +140,8 @@ function fnStartGame() {
         return;
     }
 
-
-    if (!equalNumberOfShips(gridsPlayer1, gridsPlayer2)) {
-        alert("You haven't marked the correct number of ships. You need to mark " + countCellsInGrid(gridsPlayer1[OWN], SHIP) + " cells.");
+    if (!correctNumberOfShips(SHIP_DEF_PLAYER2_PHASE, gridsPlayer1, gridsPlayer2)) {
+        alert("You've marked " + countCellsInGrid(gridsPlayer2[OWN], SHIP) + " cells as ships. You need to mark " + numberOfShips + " cells.");
         return;
     }
 
@@ -154,7 +164,7 @@ function fnIsPlayer2Ready() {
     return false;
 }
 
-function fnIsPlayer1Ready() {
+function player1IsReady() {
     for (var x = 0; x <= (gridSize - 1); x++) {
         for (var y = 0; y <= (gridSize - 1); y++) {
             if (gridsPlayer1[OWN][x][y] === SHIP) {
@@ -372,10 +382,15 @@ function fnAttackPlayer2Turn(event) {
 }
 
 //check if player 2 has same number of cells marked as ship as player 1
-function equalNumberOfShips(gridPlayer1, gridPlayer2) {
+function correctNumberOfShips(phase, gridPlayer1, gridPlayer2) {
     var player1ShipCount = countCellsInGrid(gridPlayer1[OWN], SHIP);
     var player2ShipCount = countCellsInGrid(gridPlayer2[OWN], SHIP);
-    return player2ShipCount === player1ShipCount;
+    switch(phase) {
+        case SHIP_DEF_PLAYER1_PHASE:
+            return player1ShipCount === numberOfShips;
+        case SHIP_DEF_PLAYER2_PHASE:
+            return player2ShipCount === numberOfShips;
+    }
 }
 
 //count cells with certain status in grid
@@ -424,6 +439,7 @@ function newGame() {
 //function to set visibility of all buttons
 function fnSetButtonVisibility(state) {
     gridSizeFormVisibility(state);
+    numberOfShipsFormVisibility(state);
     zoomSliderVisibility(state);
     shipDefPlayer1ButtonVisibility(state);
     shipDefPlayer2ButtonVisibility(state);
@@ -440,6 +456,16 @@ function fnSetButtonVisibility(state) {
 //function to set visibility of grid size input field
 function gridSizeFormVisibility(state) {
     var form = document.getElementById("gridSizeForm");
+    if (state === GRID_CONFIG_PHASE) {
+        form.style.display = "flex";
+    } else {
+        form.style.display = "none";
+    }
+}
+
+//function to set visibility of number of ships input field
+function numberOfShipsFormVisibility(state) {
+    var form = document.getElementById("numberOfShipsForm");
     if (state === GRID_CONFIG_PHASE) {
         form.style.display = "flex";
     } else {

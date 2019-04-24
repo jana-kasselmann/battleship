@@ -37,6 +37,7 @@ form {
     flex-direction: column;
     max-width: 300px;
     width: 100%;
+    margin: 1rem;
 }
 
 input {

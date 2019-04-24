@@ -14,10 +14,17 @@
   <div class="form">
 
     <form id="gridSizeForm">
-      <label>Grid size:</label>
+      <label>Grid Size:</label>
       <div class="input-wrap">
         <input type="number" id="gridSize" value="10" max="50" min="5" onchange="fnChangeGridSize(this.value)">
         <span>cells</span>
+      </div>
+    </form>
+
+    <form id="numberOfShipsForm">
+      <label>Number of Ships:</label>
+      <div class="input-wrap">
+        <input type="number" id="numberOfShips" value="20" min="1" onchange="changeNumberOfShips(this.value)">
       </div>
     </form>
 
