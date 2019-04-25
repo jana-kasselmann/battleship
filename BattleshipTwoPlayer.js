@@ -24,6 +24,8 @@ canvas[PLAYER2] = {
     ctx: document.getElementById("canvasPlayer2").getContext("2d")
 };
 
+var nameField = document.getElementById("nameInput");
+
 var gridsPlayer1 = null;
 var gridsPlayer2 = null;
 var gameState = null;
@@ -130,21 +132,6 @@ function changeCellSize(number) {
     }
 }
 
-//function to save the player's name
-function savePlayerName(name) {
-    switch (gameState) {
-        case SHIP_DEF_PLAYER1_PHASE:
-            player1Name = name;
-            break;
-        case SHIP_DEF_PLAYER2_PHASE:
-            player2Name = name;
-            break;
-        default:
-            console.log("Error");
-    }
-}
-
-
 //function to check if player 1 has configured ships
 function checkPlayer1Readiness() {
     if (player1Name === null) {
@@ -162,7 +149,6 @@ function checkPlayer1Readiness() {
         return;
     }
     updateGameState(SHIP_DEF_PLAYER2_PHASE);
-    document.getElementById("nameInput").value = null;
 }
 
 //function executed when the player starts the game to set the correct state
@@ -460,8 +446,31 @@ function gameIsOver(gridCurrentPlayer, gridOpponent) {
 }
 
 function updateGameState(newState, winner) {
-    gameState = newState;
-    setButtonVisibility(gameState, winner);
+    if (newState !== gameState) {
+        gameState = newState;
+        setButtonVisibility(gameState, winner);
+        updateNameField(null);
+    } 
+}
+
+function updateNameField(name) {
+    if (gameState === SHIP_DEF_PLAYER1_PHASE || gameState === SHIP_DEF_PLAYER2_PHASE) {
+        switch(gameState) {
+            case SHIP_DEF_PLAYER1_PHASE:
+                if (name === null || name === undefined) {
+                    name = "Player 1";
+                }
+                player1Name = name;
+                break;
+            case SHIP_DEF_PLAYER2_PHASE:
+                if (name === null || name === undefined) {
+                    name = "Player 2";
+                }
+                player2Name = name;
+                break;
+        }
+        nameField.value = name;
+    }
 }
 
 function shootAtEnemy(grid) {
