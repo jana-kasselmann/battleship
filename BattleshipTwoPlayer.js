@@ -306,6 +306,11 @@ function definePlayer1Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer1[OWN][x][y]);
+    if(countCellsInGrid(gridsPlayer1[OWN], SHIP) === numberOfShips) {
+        if(cellStatus === SHIP) {
+            return;
+        }        
+    }
     gridsPlayer1[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
     updateShipsLeftToPlace(SHIP_DEF_PLAYER1_PHASE);
@@ -322,6 +327,11 @@ function definePlayer2Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer2[OWN][x][y]);
+    if(countCellsInGrid(gridsPlayer2[OWN], SHIP) === numberOfShips) {
+        if(cellStatus === SHIP) {
+            return;
+        }        
+    }
     gridsPlayer2[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
     updateShipsLeftToPlace(SHIP_DEF_PLAYER2_PHASE);
