@@ -25,6 +25,7 @@ canvas[PLAYER2] = {
 };
 
 var nameField = document.getElementById("nameInput");
+var shipsToPlace = document.getElementById("shipsToPlace");
 
 var gridsPlayer1 = null;
 var gridsPlayer2 = null;
@@ -132,6 +133,22 @@ function changeCellSize(number) {
     }
 }
 
+//function to calculate how many ships still need to be placed
+function updateShipsLeftToPlace(gameState) {
+    var numberOfShipsLeft = null;
+    switch (gameState) {
+        case SHIP_DEF_PLAYER1_PHASE:
+            numberOfShipsLeft = numberOfShips - countCellsInGrid(gridsPlayer1[OWN], SHIP);
+            break;
+        case SHIP_DEF_PLAYER2_PHASE:
+            numberOfShipsLeft = numberOfShips - countCellsInGrid(gridsPlayer2[OWN], SHIP);
+            break;
+        default:
+            return;
+    }
+    shipsToPlace.innerHTML = "Ships to place: " + numberOfShipsLeft;
+}
+
 //function to check if player 1 has configured ships
 function checkPlayer1Readiness() {
     if (player1Name === null) {
@@ -174,7 +191,6 @@ function startGame() {
     updateGameState(PLAYER1_TURN);
     document.getElementById("canvasPlayer1Text").innerHTML = player1Name;
     document.getElementById("canvasPlayer2Text").innerHTML = player2Name;
-    document.getElementById("nameInput").value = null;
 
     setTimeout(function () {
         alert("It's " + player1Name + "'s turn. Click on a cell to try shooting at your opponent's ships.");
@@ -204,7 +220,7 @@ function player1IsReady() {
 }
 
 //function for initializing the cell colors
-var initializeShipsAndWater = function () {
+function initializeShipsAndWater() {
     gridsPlayer1 = initializeGrids(WATER, UNEXPLORED);
     gridsPlayer2 = initializeGrids(WATER, UNEXPLORED);
     setCellColors(canvas[PLAYER1].ctx, gridsPlayer1[OWN]);
@@ -292,6 +308,7 @@ function definePlayer1Ships() {
     var cellStatus = getCellStatus(gridsPlayer1[OWN][x][y]);
     gridsPlayer1[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
+    updateShipsLeftToPlace(SHIP_DEF_PLAYER1_PHASE);
     updateGameState(SHIP_DEF_PLAYER1_PHASE);
 }
 
@@ -307,6 +324,7 @@ function definePlayer2Ships() {
     var cellStatus = getCellStatus(gridsPlayer2[OWN][x][y]);
     gridsPlayer2[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
+    updateShipsLeftToPlace(SHIP_DEF_PLAYER2_PHASE);
     updateGameState(SHIP_DEF_PLAYER2_PHASE);
 }
 
@@ -450,12 +468,13 @@ function updateGameState(newState, winner) {
         gameState = newState;
         setButtonVisibility(gameState, winner);
         updateNameField(null);
-    } 
+        updateShipsLeftToPlace(gameState);
+    }
 }
 
 function updateNameField(name) {
     if (gameState === SHIP_DEF_PLAYER1_PHASE || gameState === SHIP_DEF_PLAYER2_PHASE) {
-        switch(gameState) {
+        switch (gameState) {
             case SHIP_DEF_PLAYER1_PHASE:
                 if (name === null || name === undefined) {
                     name = "Player 1";
@@ -524,8 +543,12 @@ function setButtonVisibility(state, winner) {
     changeVisibility("shipDefPlayer1", state === GRID_CONFIG_PHASE);
     changeVisibility("shipDefPlayer2", state === SHIP_DEF_PLAYER1_PHASE);
     changeVisibility("startGameButton", state === SHIP_DEF_PLAYER2_PHASE);
-    changeVisibility("player1ShipPlacement", state === SHIP_DEF_PLAYER1_PHASE);
-    changeVisibility("player2ShipPlacement", state === SHIP_DEF_PLAYER2_PHASE);
+    changeVisibility("shipsToPlace",
+        state === SHIP_DEF_PLAYER1_PHASE || state === SHIP_DEF_PLAYER2_PHASE
+    );
+    changeVisibility("shipPlacementInstruction",
+        state === SHIP_DEF_PLAYER1_PHASE || state === SHIP_DEF_PLAYER2_PHASE
+    );
     changeVisibility("nameInputForm",
         state === SHIP_DEF_PLAYER1_PHASE || state === SHIP_DEF_PLAYER2_PHASE
     );
