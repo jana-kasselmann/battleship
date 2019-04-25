@@ -52,7 +52,7 @@
     <form id="cellSizeForm">Zoom: <input type="range" id="cellSize" value="30" min="20" max="50"
         onchange="changeCellSize(this.value)"></form>
 
-    <button type="button" id="shipDefPlayer1" onclick="updateGameState(SHIP_DEF_PLAYER1_PHASE)">Start</button>
+    <button type="button" id="shipDefPlayer1" onclick="validateConfig()">Start</button>
 
     <button type="button" id="shipDefPlayer2" onclick="checkPlayer1Readiness()">Next</button>
 

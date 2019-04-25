@@ -98,7 +98,7 @@ function changeGridSize(number) {
 //function to update the number of ships based on user input
 function changeNumberOfShips(number) {
     if (parseInt(number) < 1 || parseInt(number) > gridSize * gridSize) {
-        alert("The number of ships must be between 1 and " + gridSize * gridSize + ".");
+        alert("For this grid size, the number of ships must be between 1 and " + gridSize * gridSize + ".");
         document.getElementById("numberOfShips").value = numberOfShips;
         return;
     }
@@ -296,6 +296,16 @@ function getCellStatus(status) {
     };
 }
 
+//function to validate user input before configuring ships
+function validateConfig() {
+    if (numberOfShips > gridSize * gridSize) {
+        alert("For this grid size, the number of ships must be between 1 and " + gridSize * gridSize + ".");
+        return;
+    } else {
+        updateGameState(SHIP_DEF_PLAYER1_PHASE);
+    }
+}
+
 //function for player 1's definition of own ships
 function definePlayer1Ships() {
     var canvasElement = event.target;
@@ -306,10 +316,10 @@ function definePlayer1Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer1[OWN][x][y]);
-    if(countCellsInGrid(gridsPlayer1[OWN], SHIP) === numberOfShips) {
-        if(cellStatus === SHIP) {
+    if (countCellsInGrid(gridsPlayer1[OWN], SHIP) === numberOfShips) {
+        if (cellStatus === SHIP) {
             return;
-        }        
+        }
     }
     gridsPlayer1[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
@@ -327,10 +337,10 @@ function definePlayer2Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer2[OWN][x][y]);
-    if(countCellsInGrid(gridsPlayer2[OWN], SHIP) === numberOfShips) {
-        if(cellStatus === SHIP) {
+    if (countCellsInGrid(gridsPlayer2[OWN], SHIP) === numberOfShips) {
+        if (cellStatus === SHIP) {
             return;
-        }        
+        }
     }
     gridsPlayer2[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
