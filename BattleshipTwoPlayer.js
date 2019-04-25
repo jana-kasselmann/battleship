@@ -581,11 +581,18 @@ function setButtonVisibility(state, winner) {
     changeVisibility("newGameButton", state === GAME_END);
     changeVisibility("canvasPlayer1", state !== GRID_CONFIG_PHASE && state !== SHIP_DEF_PLAYER2_PHASE);
     changeVisibility("canvasPlayer2", state !== GRID_CONFIG_PHASE && state !== SHIP_DEF_PLAYER1_PHASE);
+    changeFontWeight("canvasPlayer1Text", state === PLAYER1_TURN);
+    changeFontWeight("canvasPlayer2Text", state === PLAYER2_TURN);
 }
 
 function changeVisibility(elementId, isVisible) {
     var element = document.getElementById(elementId);
     element.style.display = isVisible ? "flex" : "none";
+}
+
+function changeFontWeight(elementId, isBold) {
+    var element = document.getElementById(elementId);
+    element.style.fontWeight = isBold ? "bold" : "normal";
 }
 
 //--------------------------------------------------------------
