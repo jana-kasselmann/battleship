@@ -316,15 +316,12 @@ function definePlayer1Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer1[OWN][x][y]);
-    if (countCellsInGrid(gridsPlayer1[OWN], SHIP) === numberOfShips) {
-        if (cellStatus === SHIP) {
-            return;
-        }
+    if (cellStatus === SHIP && countCellsInGrid(gridsPlayer1[OWN], SHIP) === numberOfShips) {
+        return;
     }
     gridsPlayer1[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER1].ctx, gridsPlayer1[OWN], x, y);
     updateShipsLeftToPlace(SHIP_DEF_PLAYER1_PHASE);
-    updateGameState(SHIP_DEF_PLAYER1_PHASE);
 }
 
 //function to define player 2's ships
@@ -337,15 +334,12 @@ function definePlayer2Ships() {
     y = Math.floor(y / cellSize);
     // console.log("board", "x", x, "y", y);
     var cellStatus = getCellStatus(gridsPlayer2[OWN][x][y]);
-    if (countCellsInGrid(gridsPlayer2[OWN], SHIP) === numberOfShips) {
-        if (cellStatus === SHIP) {
-            return;
-        }
+    if (cellStatus === SHIP && countCellsInGrid(gridsPlayer2[OWN], SHIP) === numberOfShips) {
+        return;
     }
     gridsPlayer2[OWN][x][y] = cellStatus;
     colorCells(canvas[PLAYER2].ctx, gridsPlayer2[OWN], x, y);
     updateShipsLeftToPlace(SHIP_DEF_PLAYER2_PHASE);
-    updateGameState(SHIP_DEF_PLAYER2_PHASE);
 }
 
 //function to mark clicked cell in shipDefPlayer as ship
